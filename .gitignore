@@ -1,0 +1,7 @@
+
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+*.tmp
+
+out/
