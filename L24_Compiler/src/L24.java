@@ -1,48 +1,48 @@
 import java.io.*;
 
 /**
- *<p>Õâ¸ö°æ±¾µÄ PL/0 ±àÒëÆ÷¸ù¾İ C ÓïÑÔµÄ°æ±¾¸ÄĞ´¶ø³É¡£Á½¸ö°æ±¾ÔÚ»ù±¾Âß¼­ÉÏÊÇÒ»ÖÂ
- *µÄ£¬ÓĞĞ©µØ·½¿ÉÄÜÓĞËù¸Ä¶¯£¬ÀıÈçgetsym()ºÍstatement()Á½¸öº¯Êı£¬ÁíÍâÇë×¢ÒâCÓïÑÔ
- *°æ±¾ÖĞµÄÈ«¾Ö±äÁ¿·ÖÉ¢µ½¹¹³É±àÒëÆ÷¸÷¸öÀàÖĞ£¬Îª±ãÓÚ²éÕÒ£¬±£ÁôÁËÕâĞ©È«¾Ö±äÁ¿Ô­À´µÄÃû×Ö¡£</p>
+ *<p>è¿™ä¸ªç‰ˆæœ¬çš„ PL/0 ç¼–è¯‘å™¨æ ¹æ® C è¯­è¨€çš„ç‰ˆæœ¬æ”¹å†™è€Œæˆã€‚ä¸¤ä¸ªç‰ˆæœ¬åœ¨åŸºæœ¬é€»è¾‘ä¸Šæ˜¯ä¸€è‡´
+ *çš„ï¼Œæœ‰äº›åœ°æ–¹å¯èƒ½æœ‰æ‰€æ”¹åŠ¨ï¼Œä¾‹å¦‚getsym()å’Œstatement()ä¸¤ä¸ªå‡½æ•°ï¼Œå¦å¤–è¯·æ³¨æ„Cè¯­è¨€
+ *ç‰ˆæœ¬ä¸­çš„å…¨å±€å˜é‡åˆ†æ•£åˆ°æ„æˆç¼–è¯‘å™¨å„ä¸ªç±»ä¸­ï¼Œä¸ºä¾¿äºæŸ¥æ‰¾ï¼Œä¿ç•™äº†è¿™äº›å…¨å±€å˜é‡åŸæ¥çš„åå­—ã€‚</p>
  *
- *<p>ÔÄ¶Á¹ı³ÌÖĞÈôÓĞÒÉÎÊÇë¼°Ê±×ÉÑ¯ÄãµÄÖú½Ì¡£</p>
+ *<p>é˜…è¯»è¿‡ç¨‹ä¸­è‹¥æœ‰ç–‘é—®è¯·åŠæ—¶å’¨è¯¢ä½ çš„åŠ©æ•™ã€‚</p>
  */
 public class L24 {
-	// ±àÒë³ÌĞòµÄ³£Êı
-	public static final int al = 10;			// ·ûºÅµÄ×î´ó³¤¶È
-	public static final int amax = 2047;		// ×î´óÔÊĞíµÄÊıÖµ
-	public static final int cxmax = 500;		// ×î¶àµÄĞéÄâ»ú´úÂëÊı
-	public static final int levmax = 3;			// ×î´óÔÊĞí¹ı³ÌÇ¶Ì×ÉùÃ÷²ãÊı [0, levmax]
-	public static final int nmax = 14;			// numberµÄ×î´óÎ»Êı
-	public static final int norw = 32;			// ¹Ø¼ü×Ö¸öÊı
-	public static final int txmax = 100;		// Ãû×Ö±íÈİÁ¿
+	// ç¼–è¯‘ç¨‹åºçš„å¸¸æ•°
+	public static final int al = 10;			// ç¬¦å·çš„æœ€å¤§é•¿åº¦
+	public static final int amax = 2047;		// æœ€å¤§å…è®¸çš„æ•°å€¼
+	public static final int cxmax = 500;		// æœ€å¤šçš„è™šæ‹Ÿæœºä»£ç æ•°
+	public static final int levmax = 3;			// æœ€å¤§å…è®¸è¿‡ç¨‹åµŒå¥—å£°æ˜å±‚æ•° [0, levmax]
+	public static final int nmax = 14;			// numberçš„æœ€å¤§ä½æ•°
+	public static final int norw = 32;			// å…³é”®å­—ä¸ªæ•°
+	public static final int txmax = 100;		// åå­—è¡¨å®¹é‡
 	
-	// Ò»Ğ©È«¾Ö±äÁ¿£¬ÆäËû¹Ø¼üµÄ±äÁ¿·Ö²¼ÈçÏÂ£º
+	// ä¸€äº›å…¨å±€å˜é‡ï¼Œå…¶ä»–å…³é”®çš„å˜é‡åˆ†å¸ƒå¦‚ä¸‹ï¼š
 	// cx, code : Interpreter
 	// dx : Parser
 	// tx, table : Table
-	public static PrintStream fa;				// Êä³öĞéÄâ»ú´úÂë
-	public static PrintStream fa1;				// Êä³öÔ´ÎÄ¼ş¼°Æä¸÷ĞĞ¶ÔÓ¦µÄÊ×µØÖ·
-	public static PrintStream fa2;				// Êä³ö½á¹û
-	public static PrintStream fas;				// Êä³öÃû×Ö±í
-	public static boolean listswitch;			// ÏÔÊ¾ĞéÄâ»ú´úÂëÓë·ñ
-	public static boolean tableswitch;			// ÏÔÊ¾Ãû×Ö±íÓë·ñ
+	public static PrintStream fa;				// è¾“å‡ºè™šæ‹Ÿæœºä»£ç 
+	public static PrintStream fa1;				// è¾“å‡ºæºæ–‡ä»¶åŠå…¶å„è¡Œå¯¹åº”çš„é¦–åœ°å€
+	public static PrintStream fa2;				// è¾“å‡ºç»“æœ
+	public static PrintStream fas;				// è¾“å‡ºåå­—è¡¨
+	public static boolean listswitch;			// æ˜¾ç¤ºè™šæ‹Ÿæœºä»£ç ä¸å¦
+	public static boolean tableswitch;			// æ˜¾ç¤ºåå­—è¡¨ä¸å¦
 	
-	// Ò»¸öµäĞÍµÄ±àÒëÆ÷µÄ×é³É²¿·Ö
-	public static Scanner lex;					// ´Ê·¨·ÖÎöÆ÷
-	public static Parser  parser;				// Óï·¨·ÖÎöÆ÷
-	public static Interpreter interp;			// ÀàP-Code½âÊÍÆ÷£¨¼°Ä¿±ê´úÂëÉú³É¹¤¾ß£©
-	public static Table table;					// Ãû×Ö±í
+	// ä¸€ä¸ªå…¸å‹çš„ç¼–è¯‘å™¨çš„ç»„æˆéƒ¨åˆ†
+	public static Scanner lex;					// è¯æ³•åˆ†æå™¨
+	public static Parser  parser;				// è¯­æ³•åˆ†æå™¨
+	public static Interpreter interp;			// ç±»P-Codeè§£é‡Šå™¨ï¼ˆåŠç›®æ ‡ä»£ç ç”Ÿæˆå·¥å…·ï¼‰
+	public static Table table;					// åå­—è¡¨
 	
-	// Îª±ÜÃâ¶à´Î´´½¨BufferedReader£¬ÎÒÃÇÊ¹ÓÃÈ«¾ÖÍ³Ò»µÄReader
-	public static BufferedReader stdin;			// ±ê×¼ÊäÈë
+	// ä¸ºé¿å…å¤šæ¬¡åˆ›å»ºBufferedReaderï¼Œæˆ‘ä»¬ä½¿ç”¨å…¨å±€ç»Ÿä¸€çš„Reader
+	public static BufferedReader stdin;			// æ ‡å‡†è¾“å…¥
 	
 	/**
-	 * ¹¹Ôìº¯Êı£¬³õÊ¼»¯±àÒëÆ÷ËùÓĞ×é³É²¿·Ö
-	 * @param fin PL/0 Ô´ÎÄ¼şµÄÊäÈëÁ÷
+	 * æ„é€ å‡½æ•°ï¼Œåˆå§‹åŒ–ç¼–è¯‘å™¨æ‰€æœ‰ç»„æˆéƒ¨åˆ†
+	 * @param fin PL/0 æºæ–‡ä»¶çš„è¾“å…¥æµ
 	 */
 	public L24(BufferedReader fin) {
-		// ¸÷²¿¼şµÄ¹¹Ôìº¯ÊıÖĞ¶¼º¬ÓĞCÓïÑÔ°æ±¾µÄ init() º¯ÊıµÄÒ»²¿·Ö´úÂë
+		// å„éƒ¨ä»¶çš„æ„é€ å‡½æ•°ä¸­éƒ½å«æœ‰Cè¯­è¨€ç‰ˆæœ¬çš„ init() å‡½æ•°çš„ä¸€éƒ¨åˆ†ä»£ç 
 		table = new Table();
 		interp = new Interpreter(table);
 		lex = new Scanner(fin);
@@ -50,8 +50,8 @@ public class L24 {
 	}
 
 	/**
-	 * Ö´ĞĞ±àÒë¶¯×÷
-	 * @return ÊÇ·ñ±àÒë³É¹¦
+	 * æ‰§è¡Œç¼–è¯‘åŠ¨ä½œ
+	 * @return æ˜¯å¦ç¼–è¯‘æˆåŠŸ
 	 */
 	boolean compile() {
 		boolean abort = false;
@@ -59,10 +59,10 @@ public class L24 {
 		try {
 			L24.fa = new PrintStream("fa.tmp");
 			L24.fas = new PrintStream("fas.tmp");
-			parser.nextSym();		// Ç°Õ°·ÖÎöĞèÒªÔ¤ÏÈ¶ÁÈëÒ»¸ö·ûºÅ
-			parser.parse();			// ¿ªÊ¼Óï·¨·ÖÎö¹ı³Ì£¨Á¬Í¬Óï·¨¼ì²é¡¢Ä¿±ê´úÂëÉú³É£©
+			parser.nextSym();		// å‰ç»åˆ†æéœ€è¦é¢„å…ˆè¯»å…¥ä¸€ä¸ªç¬¦å·
+			parser.parse();			// å¼€å§‹è¯­æ³•åˆ†æè¿‡ç¨‹ï¼ˆè¿åŒè¯­æ³•æ£€æŸ¥ã€ç›®æ ‡ä»£ç ç”Ÿæˆï¼‰
 		} catch (Error e) {
-			// Èç¹ûÊÇ·¢ÉúÑÏÖØ´íÎóÔòÖ±½ÓÖĞÖ¹
+			// å¦‚æœæ˜¯å‘ç”Ÿä¸¥é‡é”™è¯¯åˆ™ç›´æ¥ä¸­æ­¢
 			abort = true;
 		} catch (IOException e) {
 		} finally { 
@@ -73,35 +73,35 @@ public class L24 {
 		if (abort)
 			System.exit(0);
 				
-		// ±àÒë³É¹¦ÊÇÖ¸Íê³É±àÒë¹ı³Ì²¢ÇÒÃ»ÓĞ´íÎó
+		// ç¼–è¯‘æˆåŠŸæ˜¯æŒ‡å®Œæˆç¼–è¯‘è¿‡ç¨‹å¹¶ä¸”æ²¡æœ‰é”™è¯¯
 		return (Err.err == 0);
 	}
 
 	/**
-	 * Ö÷º¯Êı
+	 * ä¸»å‡½æ•°
 	 */
 	public static void main(String[] args) {
-		// Ô­À´ C ÓïÑÔ°æµÄÒ»Ğ©Óï¾ä»®·Öµ½compile()ºÍParser.parse()ÖĞ
+		// åŸæ¥ C è¯­è¨€ç‰ˆçš„ä¸€äº›è¯­å¥åˆ’åˆ†åˆ°compile()å’ŒParser.parse()ä¸­
 		String fname = "";
 		stdin = new BufferedReader(new InputStreamReader(System.in));
 		BufferedReader fin;
 		try {
-			// ÊäÈëÎÄ¼şÃû
+			// è¾“å…¥æ–‡ä»¶å
 			fname = "";
-//			System.out.print("Input L2/4 file?   ");
-//			while (fname.equals(""))
-//				fname = stdin.readLine();
-			fname = "resource/file.txt";
+			System.out.print("Input L2/4 file?   ");
+			while (fname.equals(""))
+				fname = stdin.readLine();
+			fname = "resource/"+fname;
 			fin = new BufferedReader(new FileReader(fname), 4096);
 
-			// ÊÇ·ñÊä³öĞéÄâ»ú´úÂë
+			// æ˜¯å¦è¾“å‡ºè™šæ‹Ÿæœºä»£ç 
 			fname = "y";
 			System.out.print("List object code?(Y/N)");
 			while (fname.equals(""))
 				fname = stdin.readLine();
 			L24.listswitch = (fname.charAt(0)=='y' || fname.charAt(0)=='Y');
 			
-			// ÊÇ·ñÊä³öÃû×Ö±í
+			// æ˜¯å¦è¾“å‡ºåå­—è¡¨
 			fname = "y";
 			System.out.print("List symbol table?(Y/N)");
 			while (fname.equals(""))
@@ -112,11 +112,11 @@ public class L24 {
 			L24.fa1 = new PrintStream("fa1.tmp");
 			L24.fa1.println("Input pl/0 file?   " + fname);
 
-			// ¹¹Ôì±àÒëÆ÷²¢³õÊ¼»¯
+			// æ„é€ ç¼–è¯‘å™¨å¹¶åˆå§‹åŒ–
 			L24 l24 = new L24(fin);
 			
 			if (l24.compile()) {
-				// Èç¹û³É¹¦±àÒëÔò½Ó×Å½âÊÍÔËĞĞ
+				// å¦‚æœæˆåŠŸç¼–è¯‘åˆ™æ¥ç€è§£é‡Šè¿è¡Œ
 				L24.fa2 = new PrintStream("fa2.tmp");
 				interp.interpret();
 				L24.fa2.close();

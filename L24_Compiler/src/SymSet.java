@@ -1,35 +1,35 @@
 import java.util.BitSet;
 
 /**
- * ÎÒÃÇ°Ñ java.util.BitSet °ü×°Ò»ÏÂ£¬ÒÔ±ãÓÚ±àĞ´´úÂë
+ * æˆ‘ä»¬æŠŠ java.util.BitSet åŒ…è£…ä¸€ä¸‹ï¼Œä»¥ä¾¿äºç¼–å†™ä»£ç 
  */
 public class SymSet extends BitSet {
 
 	/**
-	 * Õâ¸öÓòÃ»ÓĞÌØ±ğÒâÒå 
+	 * è¿™ä¸ªåŸŸæ²¡æœ‰ç‰¹åˆ«æ„ä¹‰ 
 	 */
 	private static final long serialVersionUID = 8136959240158320958L;
 
 	/**
-	 * ¹¹ÔìÒ»¸ö·ûºÅ¼¯ºÏ
-	 * @param nbits Õâ¸ö¼¯ºÏµÄÈİÁ¿
+	 * æ„é€ ä¸€ä¸ªç¬¦å·é›†åˆ
+	 * @param nbits è¿™ä¸ªé›†åˆçš„å®¹é‡
 	 */
 	public SymSet(int nbits) {
 		super(nbits);
 	}
 
 	/**
-	 * °ÑÒ»¸ö·ûºÅ·Åµ½¼¯ºÏÖĞ
-	 * @param s Òª·ÅÖÃµÄ·ûºÅ
+	 * æŠŠä¸€ä¸ªç¬¦å·æ”¾åˆ°é›†åˆä¸­
+	 * @param s è¦æ”¾ç½®çš„ç¬¦å·
 	 */
 	public void set(Symbol s) {
 		set(s.ordinal());
 	}
 	
 	/**
-	 * ¼ì²éÒ»¸ö·ûºÅÊÇ·ñÔÚ¼¯ºÏÖĞ
-	 * @param s Òª¼ì²éµÄ·ûºÅ
-	 * @return Èô·ûºÅÔÚ¼¯ºÏÖĞ£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
+	 * æ£€æŸ¥ä¸€ä¸ªç¬¦å·æ˜¯å¦åœ¨é›†åˆä¸­
+	 * @param s è¦æ£€æŸ¥çš„ç¬¦å·
+	 * @return è‹¥ç¬¦å·åœ¨é›†åˆä¸­ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
 	 */
 	public boolean get(Symbol s) {
 		return get(s.ordinal());

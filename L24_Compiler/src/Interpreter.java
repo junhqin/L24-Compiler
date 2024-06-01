@@ -1,65 +1,64 @@
 import java.util.Stack;
 
 /**
- * ÀàP-CodeÖ¸ÁîÀàĞÍ
+ * ç±»P-CodeæŒ‡ä»¤ç±»å‹
  */
 enum Fct {
 	LIT, OPR, LOD, STO, CAL, INT, JMP, JPC
 }
-
 /**
- *¡¡¡¡Õâ¸öÀà¶ÔÓ¦CÓïÑÔ°æ±¾ÖĞµÄ fct Ã¶¾ÙÀàĞÍºÍ instruction ½á¹¹£¬´ú±íĞéÄâ»úÖ¸Áî
+ *ã€€ã€€è¿™ä¸ªç±»å¯¹åº”Cè¯­è¨€ç‰ˆæœ¬ä¸­çš„ fct æšä¸¾ç±»å‹å’Œ instruction ç»“æ„ï¼Œä»£è¡¨è™šæ‹ŸæœºæŒ‡ä»¤
  */
 class Instruction {
 	/**
-	 * ĞéÄâ»ú´úÂëÖ¸Áî
+	 * è™šæ‹Ÿæœºä»£ç æŒ‡ä»¤
 	 */
 	public Fct f;
-	
+
 	/**
-	 * ÒıÓÃ²ãÓëÉùÃ÷²ãµÄ²ã´Î²î
+	 * å¼•ç”¨å±‚ä¸å£°æ˜å±‚çš„å±‚æ¬¡å·®
 	 */
 	public int l;
-	
+
 	/**
-	 * Ö¸Áî²ÎÊı
+	 * æŒ‡ä»¤å‚æ•°
 	 */
 	public int a;
 }
 
 /**
- *¡¡¡¡ÀàP-Code´úÂë½âÊÍÆ÷£¨º¬´úÂëÉú³Éº¯Êı£©£¬Õâ¸öÀà°üº¬ÁËCÓïÑÔ°æÖĞÁ½¸öÖØÒªµÄÈ«¾Ö±äÁ¿ cx ºÍ code
+ *ã€€ã€€ç±»P-Codeä»£ç è§£é‡Šå™¨ï¼ˆå«ä»£ç ç”Ÿæˆå‡½æ•°ï¼‰ï¼Œè¿™ä¸ªç±»åŒ…å«äº†Cè¯­è¨€ç‰ˆä¸­ä¸¤ä¸ªé‡è¦çš„å…¨å±€å˜é‡ cx å’Œ code
  */
 public class Interpreter {
-	// ½âÊÍÖ´ĞĞÊ±Ê¹ÓÃµÄÕ»´óĞ¡
+	// è§£é‡Šæ‰§è¡Œæ—¶ä½¿ç”¨çš„æ ˆå¤§å°
 	final int stacksize = 500;
-	
+
 	/**
-	 * ĞéÄâ»ú´úÂëÖ¸Õë£¬È¡Öµ·¶Î§[0, cxmax-1] 
+	 * è™šæ‹Ÿæœºä»£ç æŒ‡é’ˆï¼Œå–å€¼èŒƒå›´[0, cxmax-1]
 	 */
 	public int cx = 0;
-	
+
 	/**
-	 * ´æ·ÅĞéÄâ»ú´úÂëµÄÊı×é
+	 * å­˜æ”¾è™šæ‹Ÿæœºä»£ç çš„æ•°ç»„
 	 */
 	public Instruction[] code = new Instruction[L24.cxmax];
 
 	/**
-	 * ´æ·Å±äÁ¿µÄ·ûºÅ±í
+	 * ç¬¦å·è¡¨
 	 *
 	 */
 	public Table table;
 
 	/**
-	 * ¸¨ÖúÀàĞÍÕ»
-	 * @param t
+	 * è¾…åŠ©ç±»å‹è¡¨
+	 *
 	 */
 	Stack<Objekt> typeStack = new Stack<>();
 	public Interpreter(Table t){
 		this.table = t;
 	}
 	/**
-	 * Éú³ÉĞéÄâ»ú´úÂë
+	 * ç”Ÿæˆè™šæ‹Ÿæœºä»£ç 
 	 * @param x instruction.f
 	 * @param y instruction.l
 	 * @param z instruction.a
@@ -77,8 +76,8 @@ public class Interpreter {
 	}
 
 	/**
-	 * Êä³öÄ¿±ê´úÂëÇåµ¥
-	 * @param start ¿ªÊ¼Êä³öµÄÎ»ÖÃ
+	 * è¾“å‡ºç›®æ ‡ä»£ç æ¸…å•
+	 * @param start å¼€å§‹è¾“å‡ºçš„ä½ç½®
 	 */
 	public void listcode(int start) {
 		if (L24.listswitch) {
@@ -89,29 +88,29 @@ public class Interpreter {
 			}
 		}
 	}
-	
+
 	/**
-	 * ½âÊÍ³ÌĞò
+	 * è§£é‡Šç¨‹åº
 	 */
 	public void interpret() {
-		int p, b, t;						// Ö¸ÁîÖ¸Õë£¬Ö¸Áî»ùÖ·£¬Õ»¶¥Ö¸Õë
-		Instruction i;							// ´æ·Åµ±Ç°Ö¸Áî
-		int[] s = new int[stacksize];		// Õ»
+		int p, b, t;						// æŒ‡ä»¤æŒ‡é’ˆï¼ŒæŒ‡ä»¤åŸºå€ï¼Œæ ˆé¡¶æŒ‡é’ˆ
+		Instruction i;							// å­˜æ”¾å½“å‰æŒ‡ä»¤
+		int[] s = new int[stacksize];		// æ ˆ
 		
 		System.out.println("start pl0");
 		t = b = p = 0;
 		s[0] = s[1] = s[2] = 0;
 		do {
-			i = code[p];					// ¶Áµ±Ç°Ö¸Áî
+			i = code[p];					// è¯»å½“å‰æŒ‡ä»¤
 			p ++;
 			switch (i.f) {
-			case LIT:				// ½«aµÄÖµÈ¡µ½Õ»¶¥
+			case LIT:				// å°†açš„å€¼å–åˆ°æ ˆé¡¶
 				s[t] = i.a;
 				t++;
-				//Ä¬ÈÏÖ»ÄÜ´æ·ÅÊı×Ö
+				//Ä¬ï¿½ï¿½Ö»ï¿½Ü´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				typeStack.push(Objekt.number);
 				break;
-			case OPR:				// ÊıÑ§¡¢Âß¼­ÔËËã
+			case OPR:				// æ•°å­¦ã€é€»è¾‘è¿ç®—
 				switch (i.a)
 				{
 				case 0:
@@ -211,10 +210,10 @@ public class Interpreter {
 					} catch (Exception e) {}
 					L24.fa2.println(s[t]);
 					t++;
-					//ÔİÊ±Ä¬ÈÏÊäÈëÊı×Ö
+					//ï¿½ï¿½Ê±Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 					typeStack.push(Objekt.number);
 					break;
-				//Âß¼­Óë
+				//ï¿½ß¼ï¿½ï¿½ï¿½
 				case 17:
 					t--;
 					s[t-1] = (s[t-1]!=0 && s[t]!=0)?1:0;
@@ -222,7 +221,7 @@ public class Interpreter {
 					typeStack.pop();
 					typeStack.push(Objekt.bool);
 					break;
-				//Âß¼­»ò
+				//ï¿½ß¼ï¿½ï¿½ï¿½
 				case 18:
 					t--;
 					s[t-1] = (s[t-1]!=0 || s[t]!=0)?1:0;
@@ -230,7 +229,7 @@ public class Interpreter {
 					typeStack.pop();
 					typeStack.push(Objekt.bool);
 					break;
-				//Âß¼­·Ç
+				//ï¿½ß¼ï¿½ï¿½ï¿½
 				case 19:
 					s[t-1] = (s[t-1]==0)?1:0;
 					typeStack.pop();
@@ -239,9 +238,9 @@ public class Interpreter {
 					break;
 				}
 				break;
-			case LOD:				// È¡Ïà¶Ôµ±Ç°¹ı³ÌµÄÊı¾İ»ùµØÖ·ÎªaµÄÄÚ´æµÄÖµµ½Õ»¶¥
+			case LOD:				// å–ç›¸å¯¹å½“å‰è¿‡ç¨‹çš„æ•°æ®åŸºåœ°å€ä¸ºaçš„å†…å­˜çš„å€¼åˆ°æ ˆé¡¶
 				int type = table.getSymbol(base(i.l, s, b), i.a);
-				//boolÀàĞÍµÄ±äÁ¿
+				//boolï¿½ï¿½ï¿½ÍµÄ±ï¿½ï¿½ï¿½
 				if(type == 3 ){
 					typeStack.push(Objekt.bool);
 				} else {
@@ -250,25 +249,25 @@ public class Interpreter {
 				s[t] = s[base(i.l,s,b)+i.a];
 				t++;
 				break;
-			case STO:				// Õ»¶¥µÄÖµ´æµ½Ïà¶Ôµ±Ç°¹ı³ÌµÄÊı¾İ»ùµØÖ·ÎªaµÄÄÚ´æ
+			case STO:				// æ ˆé¡¶çš„å€¼å­˜åˆ°ç›¸å¯¹å½“å‰è¿‡ç¨‹çš„æ•°æ®åŸºåœ°å€ä¸ºaçš„å†…å­˜
 				t--;
 				s[base(i.l, s, b) + i.a] = s[t];
 				typeStack.pop();
 				break;
-			case CAL:				// µ÷ÓÃ×Ó¹ı³Ì
-				s[t] = base(i.l, s, b); 	// ½«¾²Ì¬×÷ÓÃÓò»ùµØÖ·ÈëÕ»
-				s[t+1] = b;					// ½«¶¯Ì¬×÷ÓÃÓò»ùµØÖ·ÈëÕ»
-				s[t+2] = p;					// ½«µ±Ç°Ö¸ÁîÖ¸ÕëÈëÕ»
-				b = t;  					// ¸Ä±ä»ùµØÖ·Ö¸ÕëÖµÎªĞÂ¹ı³ÌµÄ»ùµØÖ·
-				p = i.a;   					// Ìø×ª
+			case CAL:				// è°ƒç”¨å­è¿‡ç¨‹
+				s[t] = base(i.l, s, b); 	// å°†é™æ€ä½œç”¨åŸŸåŸºåœ°å€å…¥æ ˆ
+				s[t+1] = b;					// å°†åŠ¨æ€ä½œç”¨åŸŸåŸºåœ°å€å…¥æ ˆ
+				s[t+2] = p;					// å°†å½“å‰æŒ‡ä»¤æŒ‡é’ˆå…¥æ ˆ
+				b = t;  					// æ”¹å˜åŸºåœ°å€æŒ‡é’ˆå€¼ä¸ºæ–°è¿‡ç¨‹çš„åŸºåœ°å€
+				p = i.a;   					// è·³è½¬
 				break;
-			case INT:			// ·ÖÅäÄÚ´æ
+			case INT:			// åˆ†é…å†…å­˜
 				t += i.a;
 				break;
-			case JMP:				// Ö±½ÓÌø×ª
+			case JMP:				// ç›´æ¥è·³è½¬
 				p = i.a;
 				break;
-			case JPC:				// Ìõ¼şÌø×ª£¨µ±Õ»¶¥Îª0µÄÊ±ºòÌø×ª£©
+			case JPC:				// æ¡ä»¶è·³è½¬ï¼ˆå½“æ ˆé¡¶ä¸º0çš„æ—¶å€™è·³è½¬ï¼‰
 				t--;
 				if (s[t] == 0)
 					p = i.a;
@@ -276,13 +275,13 @@ public class Interpreter {
 			}
 		} while (p != 0);
 	}
-	
+
 	/**
-	 * Í¨¹ı¸ø¶¨µÄ²ã´Î²îÀ´»ñµÃ¸Ã²ãµÄ¶ÑÕ»Ö¡»ùµØÖ·
-	 * @param l Ä¿±ê²ã´ÎÓëµ±Ç°²ã´ÎµÄ²ã´Î²î
-	 * @param s ÔËĞĞÕ»
-	 * @param b µ±Ç°²ã¶ÑÕ»Ö¡»ùµØÖ·
-	 * @return Ä¿±ê²ã´ÎµÄ¶ÑÕ»Ö¡»ùµØÖ·
+	 * é€šè¿‡ç»™å®šçš„å±‚æ¬¡å·®æ¥è·å¾—è¯¥å±‚çš„å †æ ˆå¸§åŸºåœ°å€
+	 * @param l ç›®æ ‡å±‚æ¬¡ä¸å½“å‰å±‚æ¬¡çš„å±‚æ¬¡å·®
+	 * @param s è¿è¡Œæ ˆ
+	 * @param b å½“å‰å±‚å †æ ˆå¸§åŸºåœ°å€
+	 * @return ç›®æ ‡å±‚æ¬¡çš„å †æ ˆå¸§åŸºåœ°å€
 	 */
 	private int base(int l, int[] s, int b) {
 		int b1 = b;

@@ -1,42 +1,42 @@
 /**
- * ·ûºÅÀàÐÍ£¬Îª±ÜÃâºÍJavaµÄ¹Ø¼ü×ÖObject³åÍ»£¬ÎÒÃÇ¸Ä³ÉObjekt
+ * ç¬¦å·ç±»åž‹ï¼Œä¸ºé¿å…å’ŒJavaçš„å…³é”®å­—Objectå†²çªï¼Œæˆ‘ä»¬æ”¹æˆObjekt
  */
 enum Objekt {
 	constant, variable, procedure, bool, number
 }
 
 /**
- *¡¡¡¡Õâ¸öÀà·â×°ÁËPL/0±àÒëÆ÷µÄ·ûºÅ±í£¬CÓïÑÔ°æ±¾ÖÐ¹Ø¼üµÄÈ«¾Ö±äÁ¿txºÍtable[]¾ÍÔÚÕâÀï¡£
+ *ã€€ã€€è¿™ä¸ªç±»å°è£…äº†PL/0ç¼–è¯‘å™¨çš„ç¬¦å·è¡¨ï¼ŒCè¯­è¨€ç‰ˆæœ¬ä¸­å…³é”®çš„å…¨å±€å˜é‡txå’Œtable[]å°±åœ¨è¿™é‡Œã€‚
  */
 public class Table {
 	/**
-	 *¡¡¡¡¼´CÓïÑÔ°æ±¾ÖÐµÄtablestruct½á¹¹¡£
+	 *ã€€ã€€å³Cè¯­è¨€ç‰ˆæœ¬ä¸­çš„tablestructç»“æž„ã€‚
 	 */
 	public class Item {
-		String name;		// Ãû×Ö
-		Objekt kind;		// ÀàÐÍ£ºconst, var , procedure bool
-		int val;			// ÊýÖµ£¬½öconstÊ¹ÓÃ
-		int level;			// Ëù´¦²ã£¬varºÍprocedureÊ¹ÓÃ
-		int adr;			// µØÖ·£¬varºÍprocedureÊ¹ÓÃ
-		int size;			// ÐèÒª·ÖÅäµÄÊý¾ÝÇø¿Õ¼ä, ½öprocedureÊ¹ÓÃ
-		boolean isInitialized;  //±êÊ¶±äÁ¿ÊÇ·ñ±»¸³ÖµÉùÃ÷
+		String name;		// åå­—
+		Objekt kind;		// ç±»åž‹ï¼šconst, var , procedure bool
+		int val;			// æ•°å€¼ï¼Œä»…constä½¿ç”¨
+		int level;			// æ‰€å¤„å±‚ï¼Œvarå’Œprocedureä½¿ç”¨
+		int adr;			// åœ°å€ï¼Œvarå’Œprocedureä½¿ç”¨
+		int size;			// éœ€è¦åˆ†é…çš„æ•°æ®åŒºç©ºé—´, ä»…procedureä½¿ç”¨
+		boolean isInitialized;  //æ ‡è¯†å˜é‡æ˜¯å¦è¢«èµ‹å€¼å£°æ˜Ž
 	}
 	
 	/**
-	 * Ãû×Ö±í£¬ÇëÊ¹ÓÃget()º¯Êý·ÃÎÊ
+	 * åå­—è¡¨ï¼Œè¯·ä½¿ç”¨get()å‡½æ•°è®¿é—®
 	 * @see #get(int)
 	 */
 	private Item[] table = new Item[L24.txmax];
 	
 	/**
-	 * µ±Ç°Ãû×Ö±íÏîÖ¸Õë£¬Ò²¿ÉÒÔÀí½âÎªµ±Ç°ÓÐÐ§µÄÃû×Ö±í´óÐ¡£¨table size£©
+	 * å½“å‰åå­—è¡¨é¡¹æŒ‡é’ˆï¼Œä¹Ÿå¯ä»¥ç†è§£ä¸ºå½“å‰æœ‰æ•ˆçš„åå­—è¡¨å¤§å°ï¼ˆtable sizeï¼‰
 	 */
 	public int tx = 0;
 	
 	/**
-	 * »ñµÃÃû×Ö±íÄ³Ò»ÏîµÄÄÚÈÝ
-	 * @param i Ãû×Ö±íÖÐµÄÎ»ÖÃ
-	 * @return Ãû×Ö±íµÚ i ÏîµÄÄÚÈÝ
+	 * èŽ·å¾—åå­—è¡¨æŸä¸€é¡¹çš„å†…å®¹
+	 * @param i åå­—è¡¨ä¸­çš„ä½ç½®
+	 * @return åå­—è¡¨ç¬¬ i é¡¹çš„å†…å®¹
 	 */
 	public Item get(int i) {
 		if (table[i] == null) {
@@ -48,33 +48,33 @@ public class Table {
 	}
 	
 	/**
-	 * °ÑÄ³¸ö·ûºÅµÇÂ½µ½Ãû×Ö±íÖÐ£¬×¢Òâ²ÎÊý¸úCÓïÑÔ°æ±¾²»Í¬
-	 * @param k   ¸Ã·ûºÅµÄÀàÐÍ£ºconst, var, procedure
-	 * @param lev Ãû×ÖËùÔÚµÄ²ã´Î
-	 * @param dx  µ±Ç°Ó¦·ÖÅäµÄ±äÁ¿µÄÏà¶ÔµØÖ·£¬×¢Òâµ÷ÓÃenter()ºódxÒª¼ÓÒ»
+	 * æŠŠæŸä¸ªç¬¦å·ç™»é™†åˆ°åå­—è¡¨ä¸­ï¼Œæ³¨æ„å‚æ•°è·ŸCè¯­è¨€ç‰ˆæœ¬ä¸åŒ
+	 * @param k   è¯¥ç¬¦å·çš„ç±»åž‹ï¼šconst, var, procedure
+	 * @param lev åå­—æ‰€åœ¨çš„å±‚æ¬¡
+	 * @param dx  å½“å‰åº”åˆ†é…çš„å˜é‡çš„ç›¸å¯¹åœ°å€ï¼Œæ³¨æ„è°ƒç”¨enter()åŽdxè¦åŠ ä¸€
 	 */
 	public void enter(Objekt k, int lev, int dx) {
 		tx ++;
 		System.out.println("tx = "+tx);
 		Item item = get(tx);
-		item.name = L24.lex.id;			// ×¢ÒâidºÍnum¶¼ÊÇ´Ó´Ê·¨·ÖÎöÆ÷»ñµÃ
+		item.name = L24.lex.id;			// æ³¨æ„idå’Œnuméƒ½æ˜¯ä»Žè¯æ³•åˆ†æžå™¨èŽ·å¾—
 		item.kind = k;
 		switch (k) {
-			case constant:					// ³£Á¿Ãû×Ö
+			case constant:					// å¸¸é‡åå­—
 				if (L24.lex.num > L24.amax) {
-					Err.report(31);		// Êý×Ö¹ý´óÒç³ö
+					Err.report(31);		// æ•°å­—è¿‡å¤§æº¢å‡º
 					item.val = 0;
 				} else {
 					item.val = L24.lex.num;
 				}
 				item.isInitialized = true;
 				break;
-			case variable:					// ±äÁ¿Ãû×Ö
+			case variable:					// å˜é‡åå­—
 				item.level = lev;
 				item.adr = dx;
 				item.isInitialized = false;
 				break;
-			case procedure:					// ¹ý³ÌÃû×Ö
+			case procedure:					// è¿‡ç¨‹åå­—
 				item.level = lev;
 				break;
 			case bool:
@@ -86,8 +86,8 @@ public class Table {
 	}
 	
 	/**
-	 * ´òÓ¡·ûºÅ±íÄÚÈÝ£¬Õª×ÔCÓïÑÔ°æ±¾µÄ block() º¯Êý¡£
-	 * @param start µ±Ç°×÷ÓÃÓò·ûºÅ±íÇø¼äµÄ×ó¶Ë
+	 * æ‰“å°ç¬¦å·è¡¨å†…å®¹ï¼Œæ‘˜è‡ªCè¯­è¨€ç‰ˆæœ¬çš„ block() å‡½æ•°ã€‚
+	 * @param start å½“å‰ä½œç”¨åŸŸç¬¦å·è¡¨åŒºé—´çš„å·¦ç«¯
 	 */
 	public void debugTable(int start) {
 		if (!L24.tableswitch)
@@ -119,9 +119,9 @@ public class Table {
 	}
 
 	/**
-	 * ÔÚÃû×Ö±íÖÐ²éÕÒÄ³¸öÃû×ÖµÄÎ»ÖÃ
-	 * @param idt Òª²éÕÒµÄÃû×Ö
-	 * @return Èç¹ûÕÒµ½Ôò·µ»ØÃû×ÖÏîµÄÏÂ±ê£¬·ñÔò·µ»Ø0
+	 * åœ¨åå­—è¡¨ä¸­æŸ¥æ‰¾æŸä¸ªåå­—çš„ä½ç½®
+	 * @param idt è¦æŸ¥æ‰¾çš„åå­—
+	 * @return å¦‚æžœæ‰¾åˆ°åˆ™è¿”å›žåå­—é¡¹çš„ä¸‹æ ‡ï¼Œå¦åˆ™è¿”å›ž0
 	 */
 	public int position(String idt) {
 		for (int i = tx; i > 0; i--)

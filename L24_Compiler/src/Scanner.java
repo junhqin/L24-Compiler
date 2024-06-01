@@ -2,78 +2,78 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
- *¡¡¡¡´Ê·¨·ÖÎöÆ÷¸ºÔğµÄ¹¤×÷ÊÇ´ÓÔ´´úÂëÀïÃæ¶ÁÈ¡ÎÄ·¨·ûºÅ£¬ÕâÊÇPL/0±àÒëÆ÷µÄÖ÷Òª×é³É²¿·ÖÖ®Ò»¡£
+ *ã€€ã€€è¯æ³•åˆ†æå™¨è´Ÿè´£çš„å·¥ä½œæ˜¯ä»æºä»£ç é‡Œé¢è¯»å–æ–‡æ³•ç¬¦å·ï¼Œè¿™æ˜¯PL/0ç¼–è¯‘å™¨çš„ä¸»è¦ç»„æˆéƒ¨åˆ†ä¹‹ä¸€ã€‚
  */
 
 public class Scanner {
 	/**
-	 * ¸Õ¸Õ¶ÁÈëµÄ×Ö·û
+	 * åˆšåˆšè¯»å…¥çš„å­—ç¬¦
 	 */
 	private char ch = ' ';
 
 	/**
-	 * µ±Ç°¶ÁÈëµÄĞĞ
+	 * å½“å‰è¯»å…¥çš„è¡Œ
 	 */
 	private char[] line;
 	
 	/**
-	 * µ±Ç°ĞĞµÄ³¤¶È£¨line length£©
+	 * å½“å‰è¡Œçš„é•¿åº¦ï¼ˆline lengthï¼‰
 	 */
 	public int ll = 0;
 	
 	/**
-	 * µ±Ç°×Ö·ûÔÚµ±Ç°ĞĞÖĞµÄÎ»ÖÃ£¨character counter£©
+	 * å½“å‰å­—ç¬¦åœ¨å½“å‰è¡Œä¸­çš„ä½ç½®ï¼ˆcharacter counterï¼‰
 	 */
 	public int cc = 0;
 	
 	/**
-	 * µ±Ç°¶ÁÈëµÄ·ûºÅ
+	 * å½“å‰è¯»å…¥çš„ç¬¦å·
 	 */
 	public Symbol sym;
 	
 	/**
-	 * ±£Áô×ÖÁĞ±í£¨×¢Òâ±£Áô×ÖµÄ´æ·ÅË³Ğò£©
+	 * ä¿ç•™å­—åˆ—è¡¨ï¼ˆæ³¨æ„ä¿ç•™å­—çš„å­˜æ”¾é¡ºåºï¼‰
 	 */
 	private String[] word;
 	
 	/**
-	 * ±£Áô×Ö¶ÔÓ¦µÄ·ûºÅÖµ
+	 * ä¿ç•™å­—å¯¹åº”çš„ç¬¦å·å€¼
 	 */
 	private Symbol[] wsym;
 	
 	/**
-	 * µ¥×Ö·ûµÄ·ûºÅÖµ
+	 * å•å­—ç¬¦çš„ç¬¦å·å€¼
 	 */
 	private Symbol[] ssym;
 
-	// ÊäÈëÁ÷
+	// è¾“å…¥æµ
 	private BufferedReader in;
 
 	/**
-	 * ±êÊ¶·ûÃû×Ö£¨Èç¹ûµ±Ç°·ûºÅÊÇ±êÊ¶·ûµÄ»°£©
+	 * æ ‡è¯†ç¬¦åå­—ï¼ˆå¦‚æœå½“å‰ç¬¦å·æ˜¯æ ‡è¯†ç¬¦çš„è¯ï¼‰
 	 * @see Parser
 	 * @see Table#enter
 	 */
 	public String id;
 
 	/**
-	 * ÊıÖµ´óĞ¡£¨Èç¹ûµ±Ç°·ûºÅÊÇÊı×ÖµÄ»°£©
+	 * æ•°å€¼å¤§å°ï¼ˆå¦‚æœå½“å‰ç¬¦å·æ˜¯æ•°å­—çš„è¯ï¼‰
 	 * @see Parser
 	 * @see Table#enter
 	 */
 	public int num;
 	/**
-	 * ²¼¶ûÖµ
+	 * å¸ƒå°”å€¼
 	 */
 	public boolean bNum;
 	/**
-	 * ³õÊ¼»¯´Ê·¨·ÖÎöÆ÷
-	 * @param input PL/0 Ô´ÎÄ¼şÊäÈëÁ÷
+	 * åˆå§‹åŒ–è¯æ³•åˆ†æå™¨
+	 * @param input PL/0 æºæ–‡ä»¶è¾“å…¥æµ
 	 */
 	public Scanner(BufferedReader input) {
 		in = input;
 		
-		// ÉèÖÃµ¥×Ö·û·ûºÅ
+		// è®¾ç½®å•å­—ç¬¦ç¬¦å·
 		ssym = new Symbol[256];
 		java.util.Arrays.fill(ssym, Symbol.nul);
 		ssym['+'] = Symbol.plus;
@@ -89,11 +89,11 @@ public class Scanner {
 		ssym[';'] = Symbol.semicolon;
 		ssym['!'] = Symbol.not;
 		
-		// ÉèÖÃ±£Áô×ÖÃû×Ö,°´ÕÕ×ÖÄ¸Ë³Ğò£¬±ãÓÚÕÛ°ë²éÕÒ
+		// è®¾ç½®ä¿ç•™å­—åå­—,æŒ‰ç…§å­—æ¯é¡ºåºï¼Œä¾¿äºæŠ˜åŠæŸ¥æ‰¾
 		word = new String[] {"bool", "const", "else", "end","for", "if", "main",
 			"print", "procedure", "scan", "then", "var", "while"};
 		
-		// ÉèÖÃ±£Áô×Ö·ûºÅ
+		// è®¾ç½®ä¿ç•™å­—ç¬¦å·
 		wsym = new Symbol[L24.norw];
 		wsym[0] = Symbol.boolsym;
 		wsym[1] = Symbol.constsym;
@@ -111,7 +111,7 @@ public class Scanner {
 	}
 	
 	/**
-	 * ¶ÁÈ¡Ò»¸ö×Ö·û£¬Îª¼õÉÙ´ÅÅÌI/O´ÎÊı£¬Ã¿´Î¶ÁÈ¡Ò»ĞĞ
+	 * è¯»å–ä¸€ä¸ªå­—ç¬¦ï¼Œä¸ºå‡å°‘ç£ç›˜I/Oæ¬¡æ•°ï¼Œæ¯æ¬¡è¯»å–ä¸€è¡Œ
 	 */
 	void getch() {
 		String l = "";
@@ -133,57 +133,57 @@ public class Scanner {
 	}
 	
 	/**
-	 * ´Ê·¨·ÖÎö£¬»ñÈ¡Ò»¸ö´Ê·¨·ûºÅ£¬ÊÇ´Ê·¨·ÖÎöÆ÷µÄÖØµã
+	 * è¯æ³•åˆ†æï¼Œè·å–ä¸€ä¸ªè¯æ³•ç¬¦å·ï¼Œæ˜¯è¯æ³•åˆ†æå™¨çš„é‡ç‚¹
 	 */
 	public void getsym() {
-		// Wirth µÄ PL/0 ±àÒëÆ÷Ê¹ÓÃÒ»ÏµÁĞµÄif...else...À´´¦Àí
-		// µ«ÊÇÄãµÄÖú½ÌÈÏÎªÏÂÃæµÄĞ´·¨ÄÜ¹»¸ü¼ÓÇå³şµØ¿´³öÕâ¸öº¯ÊıµÄ´¦ÀíÂß¼­
-		while (Character.isWhitespace(ch))		// Ìø¹ıËùÓĞ¿Õ°××Ö·û
+		// Wirth çš„ PL/0 ç¼–è¯‘å™¨ä½¿ç”¨ä¸€ç³»åˆ—çš„if...else...æ¥å¤„ç†
+		// ä½†æ˜¯ä½ çš„åŠ©æ•™è®¤ä¸ºä¸‹é¢çš„å†™æ³•èƒ½å¤Ÿæ›´åŠ æ¸…æ¥šåœ°çœ‹å‡ºè¿™ä¸ªå‡½æ•°çš„å¤„ç†é€»è¾‘
+		while (Character.isWhitespace(ch))		// è·³è¿‡æ‰€æœ‰ç©ºç™½å­—ç¬¦
 			getch();
 		if (ch >= 'a' && ch <= 'z') {
-			// ¹Ø¼ü×Ö»òÕßÒ»°ã±êÊ¶·û
+			// å…³é”®å­—æˆ–è€…ä¸€èˆ¬æ ‡è¯†ç¬¦
 			matchKeywordOrIdentifier();
 		} else if (ch >= '0' && ch <= '9') {
-			// Êı×Ö
+			// æ•°å­—
 			matchNumber();
 		} else {
-			// ²Ù×÷·û
+			// æ“ä½œç¬¦
 			matchOperator();
 		}
 	}
 	
 	/**
-	 * ·ÖÎö¹Ø¼ü×Ö»òÕßÒ»°ã±êÊ¶·û
+	 * åˆ†æå…³é”®å­—æˆ–è€…ä¸€èˆ¬æ ‡è¯†ç¬¦
 	 */
 	void matchKeywordOrIdentifier() {
 		int i;
 		StringBuilder sb = new StringBuilder(L24.al);
-		// Ê×ÏÈ°ÑÕû¸öµ¥´Ê¶Á³öÀ´
+		// é¦–å…ˆæŠŠæ•´ä¸ªå•è¯è¯»å‡ºæ¥
 		do {
 			sb.append(ch);
 			getch();
 		} while (ch >= 'a' && ch <= 'z' || ch >= '0' && ch <= '9');
 		id = sb.toString();
 		
-		// È»ºóËÑË÷ÊÇ²»ÊÇ±£Áô×Ö£¨Çë×¢ÒâÊ¹ÓÃµÄÊÇÊ²Ã´ËÑË÷·½·¨£©
+		// ç„¶åæœç´¢æ˜¯ä¸æ˜¯ä¿ç•™å­—ï¼ˆè¯·æ³¨æ„ä½¿ç”¨çš„æ˜¯ä»€ä¹ˆæœç´¢æ–¹æ³•ï¼‰
 		i = java.util.Arrays.binarySearch(word, id);
-		// ×îºóĞÎ³É·ûºÅĞÅÏ¢
+		// æœ€åå½¢æˆç¬¦å·ä¿¡æ¯
 		if (i < 0) {
-			// ÎªboolÀàĞÍµÄÖµ
+			// ä¸ºboolç±»å‹çš„å€¼
 			if (id.equals("true") || id.equals("false")) {
-				bNum = Boolean.parseBoolean(id); // °Ñ×Ö·û´®×ª»»³É²¼¶ûÖµ
+				bNum = Boolean.parseBoolean(id); // æŠŠå­—ç¬¦ä¸²è½¬æ¢æˆå¸ƒå°”å€¼
 				sym = Symbol.tf;
 			} else {
 				sym = Symbol.ident;
 			}
 		} else {
-			// ¹Ø¼ü×Ö
+			// å…³é”®å­—
 			sym = wsym[i];
 		}
 	}
 	
 	/**
-	 * ·ÖÎöÊı×Ö
+	 * åˆ†ææ•°å­—
 	 */
 	void matchNumber() {
 		int k = 0;
@@ -193,17 +193,17 @@ public class Scanner {
 			num = 10*num + Character.digit(ch, 10);
 			k++;
 			getch();
-		} while (ch>='0' && ch<='9'); 				// »ñÈ¡Êı×ÖµÄÖµ
+		} while (ch>='0' && ch<='9'); 				// è·å–æ•°å­—çš„å€¼
 		k--;
 		if (k > L24.nmax)
 			Err.report(30);
 	}
 	
 	/**
-	 * ·ÖÎö²Ù×÷·û
+	 * åˆ†ææ“ä½œç¬¦
 	 */
 	void matchOperator() {
-		// Çë×¢ÒâÕâÀïµÄĞ´·¨¸úWirthµÄÓĞµã²»Í¬
+		// è¯·æ³¨æ„è¿™é‡Œçš„å†™æ³•è·ŸWirthçš„æœ‰ç‚¹ä¸åŒ
 		switch (ch) {
 			case '!':
 				getch();
@@ -223,7 +223,7 @@ public class Scanner {
 					sym = Symbol.becomes;
 				}
 				break;
-			case '<':		// Ğ¡ÓÚ»òÕßĞ¡ÓÚµÈÓÚ
+			case '<':		// å°äºæˆ–è€…å°äºç­‰äº
 				getch();
 				if (ch == '=') {
 					sym = Symbol.leq;
@@ -232,7 +232,7 @@ public class Scanner {
 					sym = Symbol.lss;
 				}
 				break;
-			case '>':		// ´óÓÚ»òÕß´óÓÚµÈÓÚ
+			case '>':		// å¤§äºæˆ–è€…å¤§äºç­‰äº
 				getch();
 				if (ch == '=') {
 					sym = Symbol.geq;
@@ -259,7 +259,7 @@ public class Scanner {
 					sym = Symbol.nul;
 				}
 				break;
-			default:		// ÆäËûÎªµ¥×Ö·û²Ù×÷·û£¨Èç¹û·ûºÅ·Ç·¨Ôò·µ»Ønil£©
+			default:		// å…¶ä»–ä¸ºå•å­—ç¬¦æ“ä½œç¬¦ï¼ˆå¦‚æœç¬¦å·éæ³•åˆ™è¿”å›nilï¼‰
 				sym = ssym[ch];
 				getch();
 				break;

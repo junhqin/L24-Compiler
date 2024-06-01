@@ -1,49 +1,49 @@
 import java.sql.SQLOutput;
 
 /**
- *¡¡¡¡Óï·¨·ÖÎöÆ÷¡£ÕâÊÇPL/0·ÖÎöÆ÷ÖĞ×îÖØÒªµÄ²¿·Ö£¬ÔÚÓï·¨·ÖÎöµÄ¹ı³ÌÖĞ´©²å×ÅÓï·¨´íÎó¼ì²éºÍÄ¿±ê´úÂëÉú³É¡£
+ *ã€€ã€€è¯­æ³•åˆ†æå™¨ã€‚è¿™æ˜¯PL/0åˆ†æå™¨ä¸­æœ€é‡è¦çš„éƒ¨åˆ†ï¼Œåœ¨è¯­æ³•åˆ†æçš„è¿‡ç¨‹ä¸­ç©¿æ’ç€è¯­æ³•é”™è¯¯æ£€æŸ¥å’Œç›®æ ‡ä»£ç ç”Ÿæˆã€‚
  */
 public class Parser {
-	private Scanner lex;					// ¶Ô´Ê·¨·ÖÎöÆ÷µÄÒıÓÃ
-	private Table table;					// ¶Ô·ûºÅ±íµÄÒıÓÃ
-	private Interpreter interp;				// ¶ÔÄ¿±ê´úÂëÉú³ÉÆ÷µÄÒıÓÃ
+	private Scanner lex;					// å¯¹è¯æ³•åˆ†æå™¨çš„å¼•ç”¨
+	private Table table;					// å¯¹ç¬¦å·è¡¨çš„å¼•ç”¨
+	private Interpreter interp;				// å¯¹ç›®æ ‡ä»£ç ç”Ÿæˆå™¨çš„å¼•ç”¨
 	
 	private final int symnum = Symbol.values().length;
 	
-	// ±íÊ¾ÉùÃ÷¿ªÊ¼µÄ·ûºÅ¼¯ºÏ¡¢±íÊ¾Óï¾ä¿ªÊ¼µÄ·ûºÅ¼¯ºÏ¡¢±íÊ¾Òò×Ó¿ªÊ¼µÄ·ûºÅ¼¯ºÏ
-	// Êµ¼ÊÉÏÕâ¾ÍÊÇÉùÃ÷¡¢Óï¾äºÍÒò×ÓµÄFIRST¼¯ºÏ
+	// è¡¨ç¤ºå£°æ˜å¼€å§‹çš„ç¬¦å·é›†åˆã€è¡¨ç¤ºè¯­å¥å¼€å§‹çš„ç¬¦å·é›†åˆã€è¡¨ç¤ºå› å­å¼€å§‹çš„ç¬¦å·é›†åˆ
+	// å®é™…ä¸Šè¿™å°±æ˜¯å£°æ˜ã€è¯­å¥å’Œå› å­çš„FIRSTé›†åˆ
 	private SymSet declbegsys, statbegsys, facbegsys;
 	
 	/**
-	 * µ±Ç°·ûºÅ£¬ÓÉnextsym()¶ÁÈë
+	 * å½“å‰ç¬¦å·ï¼Œç”±nextsym()è¯»å…¥
 	 * @see #nextSym()
 	 */
 	private Symbol sym;
 	
 	/**
-	 * µ±Ç°×÷ÓÃÓòµÄ¶ÑÕ»Ö¡´óĞ¡£¬»òÕßËµÊı¾İ´óĞ¡£¨data size£©
+	 * å½“å‰ä½œç”¨åŸŸçš„å †æ ˆå¸§å¤§å°ï¼Œæˆ–è€…è¯´æ•°æ®å¤§å°ï¼ˆdata sizeï¼‰
 	 */
 	private int dx = 0;
 	
 	/**
-	 * ¹¹Ôì²¢³õÊ¼»¯Óï·¨·ÖÎöÆ÷£¬ÕâÀï°üº¬ÁËCÓïÑÔ°æ±¾ÖĞinit()º¯ÊıµÄÒ»²¿·Ö´úÂë
-	 * @param l ±àÒëÆ÷µÄ´Ê·¨·ÖÎöÆ÷
-	 * @param t ±àÒëÆ÷µÄ·ûºÅ±í
-	 * @param i ±àÒëÆ÷µÄÄ¿±ê´úÂëÉú³ÉÆ÷
+	 * æ„é€ å¹¶åˆå§‹åŒ–è¯­æ³•åˆ†æå™¨ï¼Œè¿™é‡ŒåŒ…å«äº†Cè¯­è¨€ç‰ˆæœ¬ä¸­init()å‡½æ•°çš„ä¸€éƒ¨åˆ†ä»£ç 
+	 * @param l ç¼–è¯‘å™¨çš„è¯æ³•åˆ†æå™¨
+	 * @param t ç¼–è¯‘å™¨çš„ç¬¦å·è¡¨
+	 * @param i ç¼–è¯‘å™¨çš„ç›®æ ‡ä»£ç ç”Ÿæˆå™¨
 	 */
 	public Parser(Scanner l, Table t, Interpreter i) {
 		lex = l;
 		table = t;
 		interp = i;
 		
-		// ÉèÖÃÉùÃ÷¿ªÊ¼·ûºÅ¼¯
+		// è®¾ç½®å£°æ˜å¼€å§‹ç¬¦å·é›†
 		declbegsys = new SymSet(symnum);
 		declbegsys.set(Symbol.constsym);
 		declbegsys.set(Symbol.varsym);
 		declbegsys.set(Symbol.procsym);
 		declbegsys.set(Symbol.boolsym);
 
-		// ÉèÖÃÓï¾ä¿ªÊ¼·ûºÅ¼¯
+		// è®¾ç½®è¯­å¥å¼€å§‹ç¬¦å·é›†
 		statbegsys = new SymSet(symnum);
 		statbegsys.set(Symbol.ident);
 		statbegsys.set(Symbol.ifsym);
@@ -52,7 +52,7 @@ public class Parser {
 		statbegsys.set(Symbol.scansym);
 		statbegsys.set(Symbol.forsym);
 
-		// ÉèÖÃÒò×Ó¿ªÊ¼·ûºÅ¼¯
+		// è®¾ç½®å› å­å¼€å§‹ç¬¦å·é›†
 		facbegsys = new SymSet(symnum);
 		facbegsys.set(Symbol.ident);
 		facbegsys.set(Symbol.number);
@@ -63,14 +63,14 @@ public class Parser {
 	}
 	
 	/**
-	 * Æô¶¯Óï·¨·ÖÎö¹ı³Ì£¬´ËÇ°±ØĞëÏÈµ÷ÓÃÒ»´Înextsym()
+	 * å¯åŠ¨è¯­æ³•åˆ†æè¿‡ç¨‹ï¼Œæ­¤å‰å¿…é¡»å…ˆè°ƒç”¨ä¸€æ¬¡nextsym()
 	 * @see #nextSym()
 	 */
 	public void parse() {
 		SymSet nxtlev = new SymSet(symnum);
 		nxtlev.or(declbegsys);
 		nxtlev.or(statbegsys);
-		//³ÌĞòÒÔmain¿ªÍ·
+		//ç¨‹åºä»¥mainå¼€å¤´
 		if(sym == Symbol.mainsym) {
 			nextSym();
 			if(sym == Symbol.lbrace){
@@ -87,7 +87,7 @@ public class Parser {
 	}
 	
 	/**
-	 * »ñµÃÏÂÒ»¸öÓï·¨·ûºÅ£¬ÕâÀïÖ»ÊÇ¼òµ¥µ÷ÓÃÒ»ÏÂgetsym()
+	 * è·å¾—ä¸‹ä¸€ä¸ªè¯­æ³•ç¬¦å·ï¼Œè¿™é‡Œåªæ˜¯ç®€å•è°ƒç”¨ä¸€ä¸‹getsym()
 	 */
 	public void nextSym() {
 		lex.getsym();
@@ -95,7 +95,7 @@ public class Parser {
 	}
 
 	/**
-	 * ¼ì²é·ûºÅ
+	 * æ£€æŸ¥ç¬¦å·
 	 */
 	public void checkSym(Symbol s){
 		if(sym == s){
@@ -107,49 +107,49 @@ public class Parser {
 	}
 
 	/**
-	 * ²âÊÔµ±Ç°·ûºÅÊÇ·ñºÏ·¨
+	 * æµ‹è¯•å½“å‰ç¬¦å·æ˜¯å¦åˆæ³•
 	 * 
-	 * @param s1 ÎÒÃÇĞèÒªµÄ·ûºÅ
-	 * @param s2 Èç¹û²»ÊÇÎÒÃÇĞèÒªµÄ£¬ÔòĞèÒªÒ»¸ö²¹¾ÈÓÃµÄ¼¯ºÏ
-	 * @param errcode ´íÎóºÅ
+	 * @param s1 æˆ‘ä»¬éœ€è¦çš„ç¬¦å·
+	 * @param s2 å¦‚æœä¸æ˜¯æˆ‘ä»¬éœ€è¦çš„ï¼Œåˆ™éœ€è¦ä¸€ä¸ªè¡¥æ•‘ç”¨çš„é›†åˆ
+	 * @param errcode é”™è¯¯å·
 	 */
 	void test(SymSet s1, SymSet s2, int errcode) {
-		// ÔÚÄ³Ò»²¿·Ö£¨ÈçÒ»ÌõÓï¾ä£¬Ò»¸ö±í´ïÊ½£©½«Òª½áÊøÊ±Ê±ÎÒÃÇÏ£ÍûÏÂÒ»¸ö·ûºÅÊôÓÚÄ³¼¯ºÏ
-		//£¨¸Ã²¿·ÖµÄºó¸ú·ûºÅ£©£¬test¸ºÔğÕâÏî¼ì²â£¬²¢ÇÒ¸ºÔğµ±¼ì²â²»Í¨¹ıÊ±µÄ²¹¾È´ëÊ©£¬³Ì
-		// ĞòÔÚĞèÒª¼ì²âÊ±Ö¸¶¨µ±Ç°ĞèÒªµÄ·ûºÅ¼¯ºÏºÍ²¹¾ÈÓÃµÄ¼¯ºÏ£¨ÈçÖ®Ç°Î´Íê³É²¿·ÖµÄºó¸ú·û
-		// ºÅ£©£¬ÒÔ¼°¼ì²â²»Í¨¹ıÊ±µÄ´íÎóºÅ¡£
+		// åœ¨æŸä¸€éƒ¨åˆ†ï¼ˆå¦‚ä¸€æ¡è¯­å¥ï¼Œä¸€ä¸ªè¡¨è¾¾å¼ï¼‰å°†è¦ç»“æŸæ—¶æ—¶æˆ‘ä»¬å¸Œæœ›ä¸‹ä¸€ä¸ªç¬¦å·å±äºæŸé›†åˆ
+		//ï¼ˆè¯¥éƒ¨åˆ†çš„åè·Ÿç¬¦å·ï¼‰ï¼Œtestè´Ÿè´£è¿™é¡¹æ£€æµ‹ï¼Œå¹¶ä¸”è´Ÿè´£å½“æ£€æµ‹ä¸é€šè¿‡æ—¶çš„è¡¥æ•‘æªæ–½ï¼Œç¨‹
+		// åºåœ¨éœ€è¦æ£€æµ‹æ—¶æŒ‡å®šå½“å‰éœ€è¦çš„ç¬¦å·é›†åˆå’Œè¡¥æ•‘ç”¨çš„é›†åˆï¼ˆå¦‚ä¹‹å‰æœªå®Œæˆéƒ¨åˆ†çš„åè·Ÿç¬¦
+		// å·ï¼‰ï¼Œä»¥åŠæ£€æµ‹ä¸é€šè¿‡æ—¶çš„é”™è¯¯å·ã€‚
 		if (!s1.get(sym)) {
 			Err.report(errcode);
-			// µ±¼ì²â²»Í¨¹ıÊ±£¬²»Í£»ñÈ¡·ûºÅ£¬Ö±µ½ËüÊôÓÚĞèÒªµÄ¼¯ºÏ»ò²¹¾ÈµÄ¼¯ºÏ
+			// å½“æ£€æµ‹ä¸é€šè¿‡æ—¶ï¼Œä¸åœè·å–ç¬¦å·ï¼Œç›´åˆ°å®ƒå±äºéœ€è¦çš„é›†åˆæˆ–è¡¥æ•‘çš„é›†åˆ
 			while (!s1.get(sym) && !s2.get(sym))
 				nextSym();
 		}
 	}
 	
 	/**
-	 * ·ÖÎö<·Ö³ÌĞò>
+	 * åˆ†æ<åˆ†ç¨‹åº>
 	 * 
-	 * @param lev µ±Ç°·Ö³ÌĞòËùÔÚ²ã
-	 * @param fsys µ±Ç°Ä£¿éºó¸ú·ûºÅ¼¯
+	 * @param lev å½“å‰åˆ†ç¨‹åºæ‰€åœ¨å±‚
+	 * @param fsys å½“å‰æ¨¡å—åè·Ÿç¬¦å·é›†
 	 */
 	public void parseBlock(int lev, SymSet fsys) {
-		// <·Ö³ÌĞò> := [<³£Á¿ËµÃ÷²¿·Ö>][<±äÁ¿ËµÃ÷²¿·Ö>][<¹ı³ÌËµÃ÷²¿·Ö>]<Óï¾ä>
+		// <åˆ†ç¨‹åº> := [<å¸¸é‡è¯´æ˜éƒ¨åˆ†>][<å˜é‡è¯´æ˜éƒ¨åˆ†>][<è¿‡ç¨‹è¯´æ˜éƒ¨åˆ†>]<è¯­å¥>
 		
-		int dx0, tx0, cx0;				// ±£Áô³õÊ¼dx£¬txºÍcx
+		int dx0, tx0, cx0;				// ä¿ç•™åˆå§‹dxï¼Œtxå’Œcx
 		SymSet nxtlev = new SymSet(symnum);
 		
-		dx0 = dx;						// ¼ÇÂ¼±¾²ãÖ®Ç°µÄÊı¾İÁ¿£¨ÒÔ±ã»Ö¸´£©
+		dx0 = dx;						// è®°å½•æœ¬å±‚ä¹‹å‰çš„æ•°æ®é‡ï¼ˆä»¥ä¾¿æ¢å¤ï¼‰
 		dx = 3;
-		tx0 = table.tx;					// ¼ÇÂ¼±¾²ãÃû×ÖµÄ³õÊ¼Î»ÖÃ£¨ÒÔ±ã»Ö¸´£©
+		tx0 = table.tx;					// è®°å½•æœ¬å±‚åå­—çš„åˆå§‹ä½ç½®ï¼ˆä»¥ä¾¿æ¢å¤ï¼‰
 		table.get(table.tx).adr = interp.cx;
 		
 		interp.gen(Fct.JMP, 0, 0);
 		
 		if (lev > L24.levmax)
 			Err.report(32);
-		// ·ÖÎö<ËµÃ÷²¿·Ö>
+		// åˆ†æ<è¯´æ˜éƒ¨åˆ†>
 		do {
-			// <³£Á¿ËµÃ÷²¿·Ö>
+			// <å¸¸é‡è¯´æ˜éƒ¨åˆ†>
 			if (sym == Symbol.constsym) {
 				nextSym();
 				// the original do...while(sym == ident) is problematic, thanks to calculous
@@ -163,10 +163,10 @@ public class Parser {
 				if (sym == Symbol.semicolon)
 					nextSym();
 				else
-					Err.report(5);				// Â©µôÁË¶ººÅ»òÕß·ÖºÅ
+					Err.report(5);				// æ¼æ‰äº†é€—å·æˆ–è€…åˆ†å·
 				// } while (sym == ident);
 			}
-			//<bool±äÁ¿ËµÃ÷²¿·Ö>
+			//<boolå˜é‡è¯´æ˜éƒ¨åˆ†>
 			if(sym == Symbol.boolsym) {
 				nextSym();
 				parseBoolDeclaration(lev);
@@ -180,13 +180,13 @@ public class Parser {
 					Err.report(95);
 			}
 
-			// <±äÁ¿ËµÃ÷²¿·Ö>
+			// <å˜é‡è¯´æ˜éƒ¨åˆ†>
 			if (sym == Symbol.varsym) {
 				nextSym();
 				// the original do...while(sym == ident) is problematic, thanks to calculous
 				// do {
 				parseVarDeclaration(lev);
-				//Ö§³Övar a,bÕâÖÖĞ´·¨
+				//æ”¯æŒvar a,bè¿™ç§å†™æ³•
 				while (sym == Symbol.comma)
 				{
 					nextSym();
@@ -196,24 +196,24 @@ public class Parser {
 				if (sym == Symbol.semicolon)
 					nextSym();
 				else
-					Err.report(25);				// Â©µôÁË¶ººÅ»òÕß·ÖºÅ
+					Err.report(25);				// æ¼æ‰äº†é€—å·æˆ–è€…åˆ†å·
 				// } while (sym == ident);
 			}
 
-			// <¹ı³ÌËµÃ÷²¿·Ö>
+			// <è¿‡ç¨‹è¯´æ˜éƒ¨åˆ†>
 			while (sym == Symbol.procsym) {
 				nextSym();
 				if (sym == Symbol.ident) {
 					table.enter(Objekt.procedure, lev, dx);
 					nextSym();
 				} else {
-					Err.report(43);				// procedureºóÓ¦Îª±êÊ¶·û
+					Err.report(43);				// procedureååº”ä¸ºæ ‡è¯†ç¬¦
 				}
 
 				if (sym == Symbol.semicolon)
 					nextSym();
 				else
-					Err.report(100);				// Â©µôÁË·ÖºÅ
+					Err.report(100);				// æ¼æ‰äº†åˆ†å·
 
 				nxtlev = (SymSet) fsys.clone();
 				nxtlev.set(Symbol.semicolon);
@@ -226,7 +226,7 @@ public class Parser {
 					nxtlev.set(Symbol.procsym);
 					test(nxtlev, fsys, 6);
 				} else {
-					Err.report(99);				// Â©µôÁË·ÖºÅ
+					Err.report(99);				// æ¼æ‰äº†åˆ†å·
 				}
 			}
 
@@ -237,42 +237,42 @@ public class Parser {
 			nxtlev.set(Symbol.constsym);
 			nxtlev.set(Symbol.varsym);
 			test(nxtlev, declbegsys, 127);
-		} while (declbegsys.get(sym));		// Ö±µ½Ã»ÓĞÉùÃ÷·ûºÅ
+		} while (declbegsys.get(sym));		// ç›´åˆ°æ²¡æœ‰å£°æ˜ç¬¦å·
 		
-		// ¿ªÊ¼Éú³Éµ±Ç°¹ı³Ì´úÂë
+		// å¼€å§‹ç”Ÿæˆå½“å‰è¿‡ç¨‹ä»£ç 
 		Table.Item item = table.get(tx0);
 		interp.code[item.adr].a = interp.cx;
-		item.adr = interp.cx;					// µ±Ç°¹ı³Ì´úÂëµØÖ·
-		item.size = dx;							// ÉùÃ÷²¿·ÖÖĞÃ¿Ôö¼ÓÒ»ÌõÉùÃ÷¶¼»á¸ødxÔö¼Ó1£¬
-												// ÉùÃ÷²¿·ÖÒÑ¾­½áÊø£¬dx¾ÍÊÇµ±Ç°¹ı³ÌµÄ¶ÑÕ»Ö¡´óĞ¡
+		item.adr = interp.cx;					// å½“å‰è¿‡ç¨‹ä»£ç åœ°å€
+		item.size = dx;							// å£°æ˜éƒ¨åˆ†ä¸­æ¯å¢åŠ ä¸€æ¡å£°æ˜éƒ½ä¼šç»™dxå¢åŠ 1ï¼Œ
+												// å£°æ˜éƒ¨åˆ†å·²ç»ç»“æŸï¼Œdxå°±æ˜¯å½“å‰è¿‡ç¨‹çš„å †æ ˆå¸§å¤§å°
 		cx0 = interp.cx;
-		interp.gen(Fct.INT, 0, dx);			// Éú³É·ÖÅäÄÚ´æ´úÂë
+		interp.gen(Fct.INT, 0, dx);			// ç”Ÿæˆåˆ†é…å†…å­˜ä»£ç 
 		
 		table.debugTable(tx0);
 			
-		// ·ÖÎö<Óï¾ä>
-		nxtlev = (SymSet) fsys.clone();		// Ã¿¸öºó¸ú·ûºÅ¼¯ºÍ¶¼°üº¬ÉÏ²ãºó¸ú·ûºÅ¼¯ºÍ£¬ÒÔ±ã²¹¾È
-		nxtlev.set(Symbol.semicolon);		// Óï¾äºó¸ú·ûºÅÎª·ÖºÅ»òend
+		// åˆ†æ<è¯­å¥>
+		nxtlev = (SymSet) fsys.clone();		// æ¯ä¸ªåè·Ÿç¬¦å·é›†å’Œéƒ½åŒ…å«ä¸Šå±‚åè·Ÿç¬¦å·é›†å’Œï¼Œä»¥ä¾¿è¡¥æ•‘
+		nxtlev.set(Symbol.semicolon);		// è¯­å¥åè·Ÿç¬¦å·ä¸ºåˆ†å·æˆ–end
 		while(statbegsys.get(sym)){
 			parseStatement(nxtlev, lev);
 			checkSym(Symbol.semicolon);
 		}
-		interp.gen(Fct.OPR, 0, 0);		// Ã¿¸ö¹ı³Ì³ö¿Ú¶¼ÒªÊ¹ÓÃµÄÊÍ·ÅÊı¾İ¶ÎÖ¸Áî
+		interp.gen(Fct.OPR, 0, 0);		// æ¯ä¸ªè¿‡ç¨‹å‡ºå£éƒ½è¦ä½¿ç”¨çš„é‡Šæ”¾æ•°æ®æ®µæŒ‡ä»¤
 		
-		nxtlev = new SymSet(symnum);	// ·Ö³ÌĞòÃ»ÓĞ²¹¾È¼¯ºÏ
-		test(fsys, nxtlev, 8);				// ¼ì²âºó¸ú·ûºÅÕıÈ·ĞÔ
-		//todo:¼ì²é}
+		nxtlev = new SymSet(symnum);	// åˆ†ç¨‹åºæ²¡æœ‰è¡¥æ•‘é›†åˆ
+		test(fsys, nxtlev, 8);				// æ£€æµ‹åè·Ÿç¬¦å·æ­£ç¡®æ€§
+		//todo:æ£€æŸ¥}
 		if(sym != Symbol.rbrace){
 			Err.report(96);
 		}
 		interp.listcode(cx0);
 		
-		dx = dx0;							// »Ö¸´¶ÑÕ»Ö¡¼ÆÊıÆ÷
-//		table.tx = tx0;						// »Ø¸´Ãû×Ö±íÎ»ÖÃ
+		dx = dx0;							// æ¢å¤å †æ ˆå¸§è®¡æ•°å™¨
+//		table.tx = tx0;						// å›å¤åå­—è¡¨ä½ç½®
 	}
 
 	/**
-	 * bool¶¨ÒåÓï¾ä
+	 * boolå®šä¹‰è¯­å¥
 	 * @param lev
 	 */
 	private void parseBoolDeclaration(int lev) {
@@ -286,8 +286,8 @@ public class Parser {
 	}
 
 	/**
-	 * ·ÖÎö<³£Á¿ËµÃ÷²¿·Ö>
-	 * @param lev µ±Ç°ËùÔÚµÄ²ã´Î
+	 * åˆ†æ<å¸¸é‡è¯´æ˜éƒ¨åˆ†>
+	 * @param lev å½“å‰æ‰€åœ¨çš„å±‚æ¬¡
 	 */
 	void parseConstDeclaration(int lev) {
 		if (sym == Symbol.ident) {
@@ -298,28 +298,28 @@ public class Parser {
 					table.enter(Objekt.constant, lev, dx);
 					nextSym();
 				} else {
-					Err.report(2);			// ³£Á¿ËµÃ÷ = ºóÓ¦ÊÇÊı×Ö
+					Err.report(2);			// å¸¸é‡è¯´æ˜ = ååº”æ˜¯æ•°å­—
 				}
 			} else {
-				Err.report(3);				// ³£Á¿ËµÃ÷±êÊ¶ºóÓ¦ÊÇ =
+				Err.report(3);				// å¸¸é‡è¯´æ˜æ ‡è¯†ååº”æ˜¯ =
 			}
 		} else {
-			Err.report(4);					// const ºóÓ¦ÊÇ±êÊ¶·û
+			Err.report(4);					// const ååº”æ˜¯æ ‡è¯†ç¬¦
 		}
 	}
 
 	/**
-	 * ·ÖÎö<±äÁ¿ËµÃ÷²¿·Ö>
-	 * @param lev µ±Ç°²ã´Î
+	 * åˆ†æ<å˜é‡è¯´æ˜éƒ¨åˆ†>
+	 * @param lev å½“å‰å±‚æ¬¡
 	 */
 	void parseVarDeclaration(int lev) {
 		if (sym == Symbol.ident) {
-			// ÌîĞ´Ãû×Ö±í²¢¸Ä±ä¶ÑÕ»Ö¡¼ÆÊıÆ÷
+			// å¡«å†™åå­—è¡¨å¹¶æ”¹å˜å †æ ˆå¸§è®¡æ•°å™¨
 			table.enter(Objekt.variable, lev, dx);
 			dx ++;
 			nextSym();
 		} else {
-			Err.report(4);					// var ºóÓ¦ÊÇ±êÊ¶
+			Err.report(4);					// var ååº”æ˜¯æ ‡è¯†
 		}
 	}
 
@@ -334,14 +334,14 @@ public class Parser {
 
 
 	/**
-	 * ·ÖÎö<Óï¾ä>
-	 * @param fsys ºó¸ú·ûºÅ¼¯
-	 * @param lev µ±Ç°²ã´Î
+	 * åˆ†æ<è¯­å¥>
+	 * @param fsys åè·Ÿç¬¦å·é›†
+	 * @param lev å½“å‰å±‚æ¬¡
 	 */
 	void parseStatement(SymSet fsys, int lev) {
 		SymSet nxtlev;
-		// Wirth µÄ PL/0 ±àÒëÆ÷Ê¹ÓÃÒ»ÏµÁĞµÄif...else...À´´¦Àí
-		// µ«ÊÇÄãµÄÖú½ÌÈÏÎªÏÂÃæµÄĞ´·¨ÄÜ¹»¸ü¼ÓÇå³şµØ¿´³öÕâ¸öº¯ÊıµÄ´¦ÀíÂß¼­
+		// Wirth çš„ PL/0 ç¼–è¯‘å™¨ä½¿ç”¨ä¸€ç³»åˆ—çš„if...else...æ¥å¤„ç†
+		// ä½†æ˜¯ä½ çš„åŠ©æ•™è®¤ä¸ºä¸‹é¢çš„å†™æ³•èƒ½å¤Ÿæ›´åŠ æ¸…æ¥šåœ°çœ‹å‡ºè¿™ä¸ªå‡½æ•°çš„å¤„ç†é€»è¾‘
 		switch (sym) {
 		case ident:
 			parseAssignStatement(fsys, lev);
@@ -370,31 +370,31 @@ public class Parser {
 
 
 	/**
-	 * ·ÖÎö<µ±ĞÍÑ­»·Óï¾ä>
-	 * @param fsys ºó¸ú·ûºÅ¼¯
-	 * @param lev µ±Ç°²ã´Î
+	 * åˆ†æ<å½“å‹å¾ªç¯è¯­å¥>
+	 * @param fsys åè·Ÿç¬¦å·é›†
+	 * @param lev å½“å‰å±‚æ¬¡
 	 */
 	private void parseWhileStatement(SymSet fsys, int lev) {
 		int cx1, cx2;
 		SymSet nxtlev;
-		cx1 = interp.cx;						// ±£´æÅĞ¶ÏÌõ¼ş²Ù×÷µÄÎ»ÖÃ
+		cx1 = interp.cx;						// ä¿å­˜åˆ¤æ–­æ¡ä»¶æ“ä½œçš„ä½ç½®
 		nextSym();
 		checkSym(Symbol.lparen);
 		nxtlev = (SymSet) fsys.clone();
 		nxtlev.set(Symbol.rparen);
-		parseBoolExpr(nxtlev, lev);			// ·ÖÎö<Ìõ¼ş>
+		parseBoolExpr(nxtlev, lev);			// åˆ†æ<æ¡ä»¶>
 		checkSym(Symbol.rparen);
-		cx2 = interp.cx;						// ±£´æÑ­»·ÌåµÄ½áÊøµÄÏÂÒ»¸öÎ»ÖÃ
-		interp.gen(Fct.JPC, 0, 0);				// Éú³ÉÌõ¼şÌø×ª£¬µ«Ìø³öÑ­»·µÄµØÖ·Î´Öª
+		cx2 = interp.cx;						// ä¿å­˜å¾ªç¯ä½“çš„ç»“æŸçš„ä¸‹ä¸€ä¸ªä½ç½®
+		interp.gen(Fct.JPC, 0, 0);				// ç”Ÿæˆæ¡ä»¶è·³è½¬ï¼Œä½†è·³å‡ºå¾ªç¯çš„åœ°å€æœªçŸ¥
 		parseStatementList(fsys, lev);
-		interp.gen(Fct.JMP, 0, cx1);			// »ØÍ·ÖØĞÂÅĞ¶ÏÌõ¼ş
-		interp.code[cx2].a = interp.cx;			// ·´ÌîÌø³öÑ­»·µÄµØÖ·£¬Óë<Ìõ¼şÓï¾ä>ÀàËÆ
+		interp.gen(Fct.JMP, 0, cx1);			// å›å¤´é‡æ–°åˆ¤æ–­æ¡ä»¶
+		interp.code[cx2].a = interp.cx;			// åå¡«è·³å‡ºå¾ªç¯çš„åœ°å€ï¼Œä¸<æ¡ä»¶è¯­å¥>ç±»ä¼¼
 	}
 
 	/**
-	 * ·ÖÎö<¸´ºÏÓï¾ä>
-	 * @param fsys ºó¸ú·ûºÅ¼¯
-	 * @param lev µ±Ç°²ã´Î
+	 * åˆ†æ<å¤åˆè¯­å¥>
+	 * @param fsys åè·Ÿç¬¦å·é›†
+	 * @param lev å½“å‰å±‚æ¬¡
 	 */
 	private void parseBeginStatement(SymSet fsys, int lev) {
 		SymSet nxtlev;
@@ -404,24 +404,24 @@ public class Parser {
 		nxtlev.set(Symbol.semicolon);
 		nxtlev.set(Symbol.endsym);
 		parseStatement(nxtlev, lev);
-		// Ñ­»··ÖÎö{; <Óï¾ä>}£¬Ö±µ½ÏÂÒ»¸ö·ûºÅ²»ÊÇÓï¾ä¿ªÊ¼·ûºÅ»òÊÕµ½end
+		// å¾ªç¯åˆ†æ{; <è¯­å¥>}ï¼Œç›´åˆ°ä¸‹ä¸€ä¸ªç¬¦å·ä¸æ˜¯è¯­å¥å¼€å§‹ç¬¦å·æˆ–æ”¶åˆ°end
 		while (statbegsys.get(sym) || sym == Symbol.semicolon) {
 			if (sym == Symbol.semicolon)
 				nextSym();
 			else
-				Err.report(10);					// È±ÉÙ·ÖºÅ
+				Err.report(10);					// ç¼ºå°‘åˆ†å·
 			parseStatement(nxtlev, lev);
 		}
 		if (sym == Symbol.endsym)
 			nextSym();
 		else
-			Err.report(17);						// È±ÉÙend»ò·ÖºÅ
+			Err.report(17);						// ç¼ºå°‘endæˆ–åˆ†å·
 	}
 
 	/**
-	 * ·ÖÎö<Ìõ¼şÓï¾ä>
-	 * @param fsys ºó¸ú·ûºÅ¼¯
-	 * @param lev µ±Ç°²ã´Î
+	 * åˆ†æ<æ¡ä»¶è¯­å¥>
+	 * @param fsys åè·Ÿç¬¦å·é›†
+	 * @param lev å½“å‰å±‚æ¬¡
 	 */
 	private void parseIfStatement(SymSet fsys, int lev) {
 		int cx1;
@@ -430,18 +430,18 @@ public class Parser {
 		checkSym(Symbol.lparen);
 		nxtlev = (SymSet) fsys.clone();
 		nxtlev.set(Symbol.rparen);
-		parseBoolExpr(nxtlev, lev);			// ·ÖÎö<Ìõ¼ş>
+		parseBoolExpr(nxtlev, lev);			// åˆ†æ<æ¡ä»¶>
 		checkSym(Symbol.rparen);
 		if (sym == Symbol.thensym)
 			nextSym();
 		else
-			Err.report(16);						// È±ÉÙthen
-		cx1 = interp.cx;						// ±£´æµ±Ç°Ö¸ÁîµØÖ·
-		interp.gen(Fct.JPC, 0, 0);				// Éú³ÉÌõ¼şÌø×ªÖ¸Áî£¬Ìø×ªµØÖ·Î´Öª£¬ÔİÊ±Ğ´0
-		parseStatementList(fsys, lev);				// ´¦ÀíthenºóµÄÓï¾ä
+			Err.report(16);						// ç¼ºå°‘then
+		cx1 = interp.cx;						// ä¿å­˜å½“å‰æŒ‡ä»¤åœ°å€
+		interp.gen(Fct.JPC, 0, 0);				// ç”Ÿæˆæ¡ä»¶è·³è½¬æŒ‡ä»¤ï¼Œè·³è½¬åœ°å€æœªçŸ¥ï¼Œæš‚æ—¶å†™0
+		parseStatementList(fsys, lev);				// å¤„ç†thenåçš„è¯­å¥
 		if(sym == Symbol.endsym){
 			nextSym();
-			interp.code[cx1].a = interp.cx;			// ¾­statement´¦Àíºó£¬cxÎªthenºóÓï¾äÖ´ĞĞÍêµÄÎ»ÖÃ£¬ËüÕıÊÇÇ°ÃæÎ´¶¨µÄÌø×ªµØÖ·
+			interp.code[cx1].a = interp.cx;			// ç»statementå¤„ç†åï¼Œcxä¸ºthenåè¯­å¥æ‰§è¡Œå®Œçš„ä½ç½®ï¼Œå®ƒæ­£æ˜¯å‰é¢æœªå®šçš„è·³è½¬åœ°å€
 		}else if(sym == Symbol.elsesym){
 			nextSym();
 			interp.gen(Fct.JMP, 0, 0);
@@ -451,15 +451,15 @@ public class Parser {
 			interp.code[cx1].a = interp.cx;
 			checkSym(Symbol.endsym);
 		}else{
-			//È±ÉÙend»òelse
+			//ç¼ºå°‘endæˆ–else
 			Err.report(85);
 		}
 	}
 
 	/**
-	 * ·ÖÎö<¹ı³Ìµ÷ÓÃÓï¾ä>
-	 * @param fsys ºó¸ú·ûºÅ¼¯
-	 * @param lev µ±Ç°²ã´Î
+	 * åˆ†æ<è¿‡ç¨‹è°ƒç”¨è¯­å¥>
+	 * @param fsys åè·Ÿç¬¦å·é›†
+	 * @param lev å½“å‰å±‚æ¬¡
 	 */
 	private void parseCallStatement(SymSet fsys, int lev) {
 		int i;
@@ -467,24 +467,24 @@ public class Parser {
 		if (sym == Symbol.ident) {
 			i = table.position(lex.id);
 			if (i == 0) {
-				Err.report(311);					// ¹ı³ÌÎ´ÕÒµ½
+				Err.report(311);					// è¿‡ç¨‹æœªæ‰¾åˆ°
 			} else {
 				Table.Item item = table.get(i);
 				if (item.kind == Objekt.procedure)
 					interp.gen(Fct.CAL, lev - item.level, item.adr);
 				else
-					Err.report(15);				// callºó±êÊ¶·ûÓ¦Îª¹ı³Ì
+					Err.report(15);				// callåæ ‡è¯†ç¬¦åº”ä¸ºè¿‡ç¨‹
 			}
 			nextSym();
 		} else {
-			Err.report(14);						// callºóÓ¦Îª±êÊ¶·û
+			Err.report(14);						// callååº”ä¸ºæ ‡è¯†ç¬¦
 		}
 	}
 
 	/**
-	 * ·ÖÎö<Ğ´Óï¾ä>
-	 * @param fsys ºó¸ú·ûºÅ¼¯
-	 * @param lev µ±Ç°²ã´Î
+	 * åˆ†æ<å†™è¯­å¥>
+	 * @param fsys åè·Ÿç¬¦å·é›†
+	 * @param lev å½“å‰å±‚æ¬¡
 	 */
 	private void parsePrintStatement(SymSet fsys, int lev) {
 		SymSet nxtlev;
@@ -507,17 +507,17 @@ public class Parser {
 			if (sym == Symbol.rparen)
 				nextSym();
 			else
-				Err.report(33);				// print()ÖĞÓ¦ÎªÍêÕû±í´ïÊ½
+				Err.report(33);				// print()ä¸­åº”ä¸ºå®Œæ•´è¡¨è¾¾å¼
 		} else{
-			Err.report(33);					// È±ÉÙ×óÀ¨ºÅ
+			Err.report(33);					// ç¼ºå°‘å·¦æ‹¬å·
 		}
-		interp.gen(Fct.OPR, 0, 15);//Êä³ö»»ĞĞ·û
+		interp.gen(Fct.OPR, 0, 15);//è¾“å‡ºæ¢è¡Œç¬¦
 	}
 
 	/**
-	 * ·ÖÎö<¶ÁÓï¾ä>
-	 * @param fsys ºó¸ú·ûºÅ¼¯
-	 * @param lev µ±Ç°²ã´Î
+	 * åˆ†æ<è¯»è¯­å¥>
+	 * @param fsys åè·Ÿç¬¦å·é›†
+	 * @param lev å½“å‰å±‚æ¬¡
 	 */
 	private void parseScanStatement(SymSet fsys, int lev) {
 		int i;
@@ -532,11 +532,11 @@ public class Parser {
 					i = 0;
 				
 				if (i == 0) {
-					Err.report(35);			// read()ÖĞÓ¦ÊÇÉùÃ÷¹ıµÄ±äÁ¿Ãû
+					Err.report(35);			// read()ä¸­åº”æ˜¯å£°æ˜è¿‡çš„å˜é‡å
 				} else {
 					Table.Item item = table.get(i);
 					if (item.kind != Objekt.variable) {
-						Err.report(32);		// read()ÖĞµÄ±êÊ¶·û²»ÊÇ±äÁ¿, thanks to amd
+						Err.report(32);		// read()ä¸­çš„æ ‡è¯†ç¬¦ä¸æ˜¯å˜é‡, thanks to amd
 					} else {
 						interp.gen(Fct.OPR, 0, 16);
 						item.isInitialized = true;
@@ -547,22 +547,22 @@ public class Parser {
 				nextSym();
 			} while (sym == Symbol.comma);
 		} else {
-			Err.report(34);					// ¸ñÊ½´íÎó£¬Ó¦ÊÇ×óÀ¨ºÅ
+			Err.report(34);					// æ ¼å¼é”™è¯¯ï¼Œåº”æ˜¯å·¦æ‹¬å·
 		}
 		
 		if (sym == Symbol.rparen) {
 			nextSym();
 		} else {
-			Err.report(33);					// ¸ñÊ½´íÎó£¬Ó¦ÊÇÓÒÀ¨ºÅ
+			Err.report(33);					// æ ¼å¼é”™è¯¯ï¼Œåº”æ˜¯å³æ‹¬å·
 			while (!fsys.get(sym))
 				nextSym();
 		}
 	}
 
 	/**
-	 * ·ÖÎö<¸³ÖµÓï¾ä>
-	 * @param fsys ºó¸ú·ûºÅ¼¯
-	 * @param lev µ±Ç°²ã´Î
+	 * åˆ†æ<èµ‹å€¼è¯­å¥>
+	 * @param fsys åè·Ÿç¬¦å·é›†
+	 * @param lev å½“å‰å±‚æ¬¡
 	 */
 	private void parseAssignStatement(SymSet fsys, int lev) {
 		int i;
@@ -576,12 +576,12 @@ public class Parser {
 				if (sym == Symbol.becomes)
 					nextSym();
 				else
-					Err.report(13);					// Ã»ÓĞ¼ì²âµ½¸³Öµ·ûºÅ
+					Err.report(13);					// æ²¡æœ‰æ£€æµ‹åˆ°èµ‹å€¼ç¬¦å·
 				nxtlev = (SymSet) fsys.clone();
 				parseExpression(nxtlev, lev);
-				//±íÊ¾ÖµÒÑ¾­±»ÉùÃ÷
+				//è¡¨ç¤ºå€¼å·²ç»è¢«å£°æ˜
 				item.isInitialized = true;
-				// parseExpression½«²úÉúÒ»ÏµÁĞÖ¸Áî£¬µ«×îÖÕ½á¹û½«»á±£´æÔÚÕ»¶¥£¬Ö´ĞĞstoÃüÁîÍê³É¸³Öµ
+				// parseExpressionå°†äº§ç”Ÿä¸€ç³»åˆ—æŒ‡ä»¤ï¼Œä½†æœ€ç»ˆç»“æœå°†ä¼šä¿å­˜åœ¨æ ˆé¡¶ï¼Œæ‰§è¡Œstoå‘½ä»¤å®Œæˆèµ‹å€¼
 				interp.gen(Fct.STO, lev - item.level, item.adr);
 			} else if(item.kind == Objekt.bool) {
 				nextSym();
@@ -595,23 +595,23 @@ public class Parser {
 				item.isInitialized = true;
 				interp.gen(Fct.STO, lev - item.level, item.adr);
 			} else {
-				Err.report(12);						// ¸³ÖµÓï¾ä¸ñÊ½´íÎó
+				Err.report(12);						// èµ‹å€¼è¯­å¥æ ¼å¼é”™è¯¯
 			}
 		} else {
-			Err.report(219);							// ±äÁ¿Î´ÕÒµ½
+			Err.report(219);							// å˜é‡æœªæ‰¾åˆ°
 		}
 	}
 
 	/**
-	 * ·ÖÎö<±í´ïÊ½>
-	 * @param fsys ºó¸ú·ûºÅ¼¯
-	 * @param lev µ±Ç°²ã´Î
+	 * åˆ†æ<è¡¨è¾¾å¼>
+	 * @param fsys åè·Ÿç¬¦å·é›†
+	 * @param lev å½“å‰å±‚æ¬¡
 	 */
 	private Symbol parseExpression(SymSet fsys, int lev) {
 		Symbol addop;
 		SymSet nxtlev;
 		Symbol lefttype,rightype;
-		// ·ÖÎö[+|-]<Ïî>
+		// åˆ†æ[+|-]<é¡¹>
 		if (sym == Symbol.plus || sym == Symbol.minus) {
 			addop = sym;
 			nextSym();
@@ -619,7 +619,7 @@ public class Parser {
 			nxtlev.set(Symbol.plus);
 			nxtlev.set(Symbol.minus);
 			lefttype = parseTerm(nxtlev, lev);
-			//±ÜÃâ³öÏÖ-bool
+			//é¿å…å‡ºç°-bool
 			if(lefttype !=Symbol.number){
 				Err.report(78);
 			}
@@ -632,7 +632,7 @@ public class Parser {
 			lefttype = parseTerm(nxtlev, lev);
 		}
 		
-		// ·ÖÎö{<¼Ó·¨ÔËËã·û><Ïî>}
+		// åˆ†æ{<åŠ æ³•è¿ç®—ç¬¦><é¡¹>}
 		while (sym == Symbol.plus || sym == Symbol.minus) {
 			addop = sym;
 			nextSym();
@@ -640,7 +640,7 @@ public class Parser {
 			nxtlev.set(Symbol.plus);
 			nxtlev.set(Symbol.minus);
 			rightype = parseTerm(nxtlev, lev);
-			//±ÜÃâ³öÏÖ×óÓÒÀàĞÍ²»Ò»ÖÂ
+			//é¿å…å‡ºç°å·¦å³ç±»å‹ä¸ä¸€è‡´
 			if(rightype != lefttype){
 				Err.report(77);
 			}
@@ -653,21 +653,21 @@ public class Parser {
 	}
 
 	/**
-	 * ·ÖÎö<Ïî>
-	 * @param fsys ºó¸ú·ûºÅ¼¯
-	 * @param lev µ±Ç°²ã´Î
+	 * åˆ†æ<é¡¹>
+	 * @param fsys åè·Ÿç¬¦å·é›†
+	 * @param lev å½“å‰å±‚æ¬¡
 	 */
 	private Symbol parseTerm(SymSet fsys, int lev) {
 		Symbol mulop;
 		SymSet nxtlev;
 		Symbol leftType;
-		// ·ÖÎö<Òò×Ó>
+		// åˆ†æ<å› å­>
 		nxtlev = (SymSet) fsys.clone();
 		nxtlev.set(Symbol.times);
 		nxtlev.set(Symbol.slash);
 		leftType = parseFactor(nxtlev, lev);
 		
-		// ·ÖÎö{<³Ë·¨ÔËËã·û><Òò×Ó>}
+		// åˆ†æ{<ä¹˜æ³•è¿ç®—ç¬¦><å› å­>}
 		while (sym == Symbol.times || sym == Symbol.slash) {
 			mulop = sym;
 			nextSym();
@@ -687,30 +687,30 @@ public class Parser {
 	}
 
 	/**
-	 * ·ÖÎö<Òò×Ó>
+	 * åˆ†æ<å› å­>
 	 *
-	 * @param fsys ºó¸ú·ûºÅ¼¯
-	 * @param lev  µ±Ç°²ã´Î
+	 * @param fsys åè·Ÿç¬¦å·é›†
+	 * @param lev  å½“å‰å±‚æ¬¡
 	 * @return
 	 */
 	private Symbol parseFactor(SymSet fsys, int lev) {
 		SymSet nxtlev;
 		Symbol returnType = Symbol.nul;
-		test(facbegsys, fsys, 24);			// ¼ì²âÒò×ÓµÄ¿ªÊ¼·ûºÅ
+		test(facbegsys, fsys, 24);			// æ£€æµ‹å› å­çš„å¼€å§‹ç¬¦å·
 		// the original while... is problematic: var1(var2+var3)
 		// thanks to macross
 		// while(inset(sym, facbegsys))
 		if (facbegsys.get(sym)) {
-			if (sym == Symbol.ident) {			// Òò×ÓÎª³£Á¿»ò±äÁ¿
+			if (sym == Symbol.ident) {			// å› å­ä¸ºå¸¸é‡æˆ–å˜é‡
 				returnType = Symbol.number;
 				int i = table.position(lex.id);
 				if (i > 0) {
 					Table.Item item = table.get(i);
 					switch (item.kind) {
-						case constant:			// Ãû×ÖÎª³£Á¿
+						case constant:			// åå­—ä¸ºå¸¸é‡
 							interp.gen(Fct.LIT, 0, item.val);
 							break;
-						case variable:// Ãû×ÖÎª±äÁ¿
+						case variable:// åå­—ä¸ºå˜é‡
 							if(!item.isInitialized){
 								Err.report(95);
 							}
@@ -723,15 +723,15 @@ public class Parser {
 							}
 							interp.gen(Fct.LOD, lev - item.level, item.adr);
 							break;
-						case procedure:			// Ãû×ÖÎª¹ı³Ì
-							Err.report(21);				// ²»ÄÜÎª¹ı³Ì
+						case procedure:			// åå­—ä¸ºè¿‡ç¨‹
+							Err.report(21);				// ä¸èƒ½ä¸ºè¿‡ç¨‹
 							break;
 					}
 				} else {
-					Err.report(11);					// ±êÊ¶·ûÎ´ÉùÃ÷
+					Err.report(11);					// æ ‡è¯†ç¬¦æœªå£°æ˜
 				}
 				nextSym();
-			} else if (sym == Symbol.number) {// Òò×ÓÎªÊı
+			} else if (sym == Symbol.number) {// å› å­ä¸ºæ•°
 				returnType = sym;
 				int num = lex.num;
 				if (num > L24.amax) {
@@ -740,7 +740,7 @@ public class Parser {
 				}
 				interp.gen(Fct.LIT, 0, num);
 				nextSym();
-			} else if (sym == Symbol.lparen) {	// Òò×ÓÎª±í´ïÊ½
+			} else if (sym == Symbol.lparen) {	// å› å­ä¸ºè¡¨è¾¾å¼
 				nextSym();
 				nxtlev = (SymSet) fsys.clone();
 				nxtlev.set(Symbol.rparen);
@@ -748,9 +748,9 @@ public class Parser {
 				if (sym == Symbol.rparen)
 					nextSym();
 				else
-					Err.report(22);					// È±ÉÙÓÒÀ¨ºÅ
+					Err.report(22);					// ç¼ºå°‘å³æ‹¬å·
 			} else {
-				// ×ö²¹¾È´ëÊ©
+				// åšè¡¥æ•‘æªæ–½
 				test(fsys, facbegsys, 23);
 			}
 		} else{
@@ -761,9 +761,9 @@ public class Parser {
 	}
 
 	/**
-	 * ·ÖÎö<Ìõ¼ş> <bool_expr>
-	 * @param fsys ºó¸ú·ûºÅ¼¯
-	 * @param lev µ±Ç°²ã´Î
+	 * åˆ†æ<æ¡ä»¶> <bool_expr>
+	 * @param fsys åè·Ÿç¬¦å·é›†
+	 * @param lev å½“å‰å±‚æ¬¡
 	 */
 	private void parseBoolExpr(SymSet fsys, int lev) {
 		SymSet nxtlev;
@@ -785,18 +785,18 @@ public class Parser {
 		while(sym == Symbol.and){
 			nextSym();
 			parseBoolFactor(fsys, lev);
-			interp.gen(Fct.OPR, 0, 17); // Éú³É && µÄÖĞ¼ä´úÂë
+			interp.gen(Fct.OPR, 0, 17); // ç”Ÿæˆ && çš„ä¸­é—´ä»£ç 
 		}
 	}
 
 	private void parseBoolFactor(SymSet fsys, int lev) {
-		//Èç¹ûÓĞ£¬±íÊ¾µ±Ç°¹ØÏµÔËËã·û
+		//å¦‚æœæœ‰ï¼Œè¡¨ç¤ºå½“å‰å…³ç³»è¿ç®—ç¬¦
 		Symbol relop;
 		SymSet nxtlev;
 		if(sym == Symbol.not){
 			nextSym();
 			parseBoolFactor(fsys, lev);
-			interp.gen(Fct.OPR, 0, 19); // Éú³É ! µÄÖĞ¼ä´úÂë
+			interp.gen(Fct.OPR, 0, 19); // ç”Ÿæˆ ! çš„ä¸­é—´ä»£ç 
 		}else if(sym == Symbol.lparen){
 			nextSym();
 			parseBoolExpr(fsys, lev);
@@ -804,7 +804,7 @@ public class Parser {
 			if(sym == Symbol.rparen){
 				nextSym();
 			}else {
-				Err.report(22); // È±ÉÙÓÒÀ¨ºÅ
+				Err.report(22); // ç¼ºå°‘å³æ‹¬å·
 			}
 		} else if (sym == Symbol.tf) {
 			interp.gen(Fct.LIT, 0, (lex.bNum)?1:0);
@@ -817,7 +817,7 @@ public class Parser {
 					interp.gen(Fct.LOD, lev - item.level, item.adr);
 					nextSym();
 				}
-				else {//ÊÇintÀàĞÍµÄ±äÁ¿
+				else {//æ˜¯intç±»å‹çš„å˜é‡
 					nxtlev = (SymSet) fsys.clone();
 					nxtlev.set(Symbol.eql);
 					nxtlev.set(Symbol.neq);
@@ -856,7 +856,7 @@ public class Parser {
 				}
 			}
 		} else {
-			Err.report(86); // Óï·¨´íÎó
+			Err.report(86); // è¯­æ³•é”™è¯¯
 		}
 	}
 }
