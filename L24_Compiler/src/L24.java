@@ -91,7 +91,7 @@ public class L24 {
 			System.out.print("Input L2/4 file?   ");
 			while (fname.equals(""))
 				fname = stdin.readLine();
-			fname = "resource/"+fname;
+			fname = "resources/"+fname;
 			fin = new BufferedReader(new FileReader(fname), 4096);
 
 			// 是否输出虚拟机代码
