@@ -1,7 +1,9 @@
 
 !**/src/main/**/target/
 !**/src/test/**/target/
-
+.idea
 *.tmp
-
+.gradle
+build
 out/
+*.iml
