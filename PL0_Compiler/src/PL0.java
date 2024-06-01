@@ -1,48 +1,48 @@
 import java.io.*;
 
 /**
- *<p>Õâ¸ö°æ±¾µÄ PL/0 ±àÒëÆ÷¸ù¾İ C ÓïÑÔµÄ°æ±¾¸ÄĞ´¶ø³É¡£Á½¸ö°æ±¾ÔÚ»ù±¾Âß¼­ÉÏÊÇÒ»ÖÂ
- *µÄ£¬ÓĞĞ©µØ·½¿ÉÄÜÓĞËù¸Ä¶¯£¬ÀıÈçgetsym()ºÍstatement()Á½¸öº¯Êı£¬ÁíÍâÇë×¢ÒâCÓïÑÔ
- *°æ±¾ÖĞµÄÈ«¾Ö±äÁ¿·ÖÉ¢µ½¹¹³É±àÒëÆ÷¸÷¸öÀàÖĞ£¬Îª±ãÓÚ²éÕÒ£¬±£ÁôÁËÕâĞ©È«¾Ö±äÁ¿Ô­À´µÄÃû×Ö¡£</p>
+ *<p>ï¿½ï¿½ï¿½ï¿½æ±¾ï¿½ï¿½ PL/0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ C ï¿½ï¿½ï¿½ÔµÄ°æ±¾ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½É¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ±¾ï¿½Ú»ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
+ *ï¿½Ä£ï¿½ï¿½ï¿½Ğ©ï¿½Ø·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½getsym()ï¿½ï¿½statement()ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½
+ *ï¿½æ±¾ï¿½Ğµï¿½È«ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½É¢ï¿½ï¿½ï¿½ï¿½ï¿½É±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ£ï¿½Îªï¿½ï¿½ï¿½Ú²ï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ©È«ï¿½Ö±ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¡ï¿½</p>
  *
- *<p>ÔÄ¶Á¹ı³ÌÖĞÈôÓĞÒÉÎÊÇë¼°Ê±×ÉÑ¯ÄãµÄÖú½Ì¡£</p>
+ *<p>ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë¼°Ê±ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¡ï¿½</p>
  */
 public class PL0 {
-	// ±àÒë³ÌĞòµÄ³£Êı
-	public static final int al = 10;			// ·ûºÅµÄ×î´ó³¤¶È
-	public static final int amax = 2047;		// ×î´óÔÊĞíµÄÊıÖµ
-	public static final int cxmax = 500;		// ×î¶àµÄĞéÄâ»ú´úÂëÊı
-	public static final int levmax = 3;			// ×î´óÔÊĞí¹ı³ÌÇ¶Ì×ÉùÃ÷²ãÊı [0, levmax]
-	public static final int nmax = 14;			// numberµÄ×î´óÎ»Êı
-	public static final int norw = 32;			// ¹Ø¼ü×Ö¸öÊı
-	public static final int txmax = 100;		// Ãû×Ö±íÈİÁ¿
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½
+	public static final int al = 10;			// ï¿½ï¿½ï¿½Åµï¿½ï¿½ï¿½ó³¤¶ï¿½
+	public static final int amax = 2047;		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+	public static final int cxmax = 500;		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	public static final int levmax = 3;			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ [0, levmax]
+	public static final int nmax = 14;			// numberï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+	public static final int norw = 32;			// ï¿½Ø¼ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½
+	public static final int txmax = 100;		// ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½
 	
-	// Ò»Ğ©È«¾Ö±äÁ¿£¬ÆäËû¹Ø¼üµÄ±äÁ¿·Ö²¼ÈçÏÂ£º
+	// Ò»Ğ©È«ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½Ö²ï¿½ï¿½ï¿½ï¿½Â£ï¿½
 	// cx, code : Interpreter
 	// dx : Parser
 	// tx, table : Table
-	public static PrintStream fa;				// Êä³öĞéÄâ»ú´úÂë
-	public static PrintStream fa1;				// Êä³öÔ´ÎÄ¼ş¼°Æä¸÷ĞĞ¶ÔÓ¦µÄÊ×µØÖ·
-	public static PrintStream fa2;				// Êä³ö½á¹û
-	public static PrintStream fas;				// Êä³öÃû×Ö±í
-	public static boolean listswitch;			// ÏÔÊ¾ĞéÄâ»ú´úÂëÓë·ñ
-	public static boolean tableswitch;			// ÏÔÊ¾Ãû×Ö±íÓë·ñ
+	public static PrintStream fa;				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	public static PrintStream fa1;				// ï¿½ï¿½ï¿½Ô´ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¶ï¿½Ó¦ï¿½ï¿½ï¿½×µï¿½Ö·
+	public static PrintStream fa2;				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	public static PrintStream fas;				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½
+	public static boolean listswitch;			// ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	public static boolean tableswitch;			// ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½
 	
-	// Ò»¸öµäĞÍµÄ±àÒëÆ÷µÄ×é³É²¿·Ö
-	public static Scanner lex;					// ´Ê·¨·ÖÎöÆ÷
-	public static Parser  parser;				// Óï·¨·ÖÎöÆ÷
-	public static Interpreter interp;			// ÀàP-Code½âÊÍÆ÷£¨¼°Ä¿±ê´úÂëÉú³É¹¤¾ß£©
-	public static Table table;					// Ãû×Ö±í
+	// Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ÍµÄ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É²ï¿½ï¿½ï¿½
+	public static Scanner lex;					// ï¿½Ê·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	public static Parser  parser;				// ï¿½ï·¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	public static Interpreter interp;			// ï¿½ï¿½P-Codeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½ß£ï¿½
+	public static Table table;					// ï¿½ï¿½ï¿½Ö±ï¿½
 	
-	// Îª±ÜÃâ¶à´Î´´½¨BufferedReader£¬ÎÒÃÇÊ¹ÓÃÈ«¾ÖÍ³Ò»µÄReader
-	public static BufferedReader stdin;			// ±ê×¼ÊäÈë
+	// Îªï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½BufferedReaderï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½È«ï¿½ï¿½Í³Ò»ï¿½ï¿½Reader
+	public static BufferedReader stdin;			// ï¿½ï¿½×¼ï¿½ï¿½ï¿½ï¿½
 	
 	/**
-	 * ¹¹Ôìº¯Êı£¬³õÊ¼»¯±àÒëÆ÷ËùÓĞ×é³É²¿·Ö
-	 * @param fin PL/0 Ô´ÎÄ¼şµÄÊäÈëÁ÷
+	 * ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É²ï¿½ï¿½ï¿½
+	 * @param fin PL/0 Ô´ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 	public PL0(BufferedReader fin) {
-		// ¸÷²¿¼şµÄ¹¹Ôìº¯ÊıÖĞ¶¼º¬ÓĞCÓïÑÔ°æ±¾µÄ init() º¯ÊıµÄÒ»²¿·Ö´úÂë
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½Ğ¶ï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Ô°æ±¾ï¿½ï¿½ init() ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½
 		table = new Table();
 		interp = new Interpreter();
 		lex = new Scanner(fin);
@@ -50,8 +50,8 @@ public class PL0 {
 	}
 
 	/**
-	 * Ö´ĞĞ±àÒë¶¯×÷
-	 * @return ÊÇ·ñ±àÒë³É¹¦
+	 * Ö´ï¿½Ğ±ï¿½ï¿½ë¶¯ï¿½ï¿½
+	 * @return ï¿½Ç·ï¿½ï¿½ï¿½ï¿½É¹ï¿½
 	 */
 	boolean compile() {
 		boolean abort = false;
@@ -59,10 +59,10 @@ public class PL0 {
 		try {
 			PL0.fa = new PrintStream("fa.tmp");
 			PL0.fas = new PrintStream("fas.tmp");
-			parser.nextSym();		// Ç°Õ°·ÖÎöĞèÒªÔ¤ÏÈ¶ÁÈëÒ»¸ö·ûºÅ
-			parser.parse();			// ¿ªÊ¼Óï·¨·ÖÎö¹ı³Ì£¨Á¬Í¬Óï·¨¼ì²é¡¢Ä¿±ê´úÂëÉú³É£©
+			parser.nextSym();		// Ç°Õ°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÒªÔ¤ï¿½È¶ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			parser.parse();			// ï¿½ï¿½Ê¼ï¿½ï·¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì£ï¿½ï¿½ï¿½Í¬ï¿½ï·¨ï¿½ï¿½é¡¢Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É£ï¿½
 		} catch (Error e) {
-			// Èç¹ûÊÇ·¢ÉúÑÏÖØ´íÎóÔòÖ±½ÓÖĞÖ¹
+			// ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½Ö¹
 			abort = true;
 		} catch (IOException e) {
 		} finally { 
@@ -73,34 +73,37 @@ public class PL0 {
 		if (abort)
 			System.exit(0);
 				
-		// ±àÒë³É¹¦ÊÇÖ¸Íê³É±àÒë¹ı³Ì²¢ÇÒÃ»ÓĞ´íÎó
+		// ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½É±ï¿½ï¿½ï¿½ï¿½ï¿½Ì²ï¿½ï¿½ï¿½Ã»ï¿½Ğ´ï¿½ï¿½ï¿½
 		return (Err.err == 0);
 	}
 
 	/**
-	 * Ö÷º¯Êı
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 	public static void main(String[] args) {
-		// Ô­À´ C ÓïÑÔ°æµÄÒ»Ğ©Óï¾ä»®·Öµ½compile()ºÍParser.parse()ÖĞ
+		// Ô­ï¿½ï¿½ C ï¿½ï¿½ï¿½Ô°ï¿½ï¿½Ò»Ğ©ï¿½ï¿½ä»®ï¿½Öµï¿½compile()ï¿½ï¿½Parser.parse()ï¿½ï¿½
+		boolean t;
+		t = 123==1223;
+		System.out.println(t);
 		String fname = "";
 		stdin = new BufferedReader(new InputStreamReader(System.in));
 		BufferedReader fin;
 		try {
-			// ÊäÈëÎÄ¼şÃû
+			// ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
 			fname = "";
 			System.out.print("Input pl/0 file?   ");
 			while (fname.equals(""))
 				fname = stdin.readLine();
 			fin = new BufferedReader(new FileReader(fname), 4096);
 
-			// ÊÇ·ñÊä³öĞéÄâ»ú´úÂë
+			// ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			fname = "";
 			System.out.print("List object code?(Y/N)");
 			while (fname.equals(""))
 				fname = stdin.readLine();
 			PL0.listswitch = (fname.charAt(0)=='y' || fname.charAt(0)=='Y');
 			
-			// ÊÇ·ñÊä³öÃû×Ö±í
+			// ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½
 			fname = "";
 			System.out.print("List symbol table?(Y/N)");
 			while (fname.equals(""))
@@ -110,11 +113,11 @@ public class PL0 {
 			PL0.fa1 = new PrintStream("fa1.tmp");
 			PL0.fa1.println("Input pl/0 file?   " + fname);
 
-			// ¹¹Ôì±àÒëÆ÷²¢³õÊ¼»¯
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
 			PL0 pl0 = new PL0(fin);
 			
 			if (pl0.compile()) {
-				// Èç¹û³É¹¦±àÒëÔò½Ó×Å½âÊÍÔËĞĞ
+				// ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				PL0.fa2 = new PrintStream("fa2.tmp");
 				interp.interpret();
 				PL0.fa2.close();

@@ -1,18 +1,25 @@
 下面是用EBNF描述的L24语言，使用到的EBNF元符号含义同教材P13
 ````
-<program> = "main" "{" <stmt_list> "}"
+<program> = "main" <block>
+<block> = "{"[<const_declaration>] [<var_declaration>] [<bool_declaration>] <stmt_list> "}"
 <stmt_list> = {<stmt> ";"}
 <stmt> = <assign_stmt>| <if_stmt> |<while_stmt> |<scan_stmt> | <print_stmt>
-<assign_stmt> = <ident> "=" <expr>
+<assign_stmt> = <ident> "=" <assign_expr>
+<assign_expr> = <expr> | <bool_expr>
 <if_stmt> = "if" "("<bool_expr>")" "then" "{"<stmt_list>"}" "end"
 |"if" "("<bool_expr>")" "then" "{"<stmt_list>"}" "else" "{"<stmt_list>"}" "end"
 <while_stmt> = "while" "("<bool_expr>")" "{"<stmt_list>"}"
-<scan_stmt> = "scan" "(" <ident {"," <ident>} ")"
+<scan_stmt> = "scan" "(" <ident> {"," <ident>} ")"
 <print_stmt> = "print" "(" <expr> {"," <expr>} ")"
-<bool_expr> = <expr> ("=="|"!="|"<"|"<="|">"|">=") <expr>
+<bool_expr> = <bool_term> {("||") <bool_term>}
+<bool_term> = <bool_factor> {("&&") <bool_factor>}
+<bool_factor> = "true" | "false" | <ident> ｜<expr> ("=="|"!="|"<"|"<="|">"|">=") <expr> | "!" <bool_factor> | "(" <bool_expr> ")"
 <expr> = ["+"|"-"] <term> {("+"|"-") <term>}
 <term> = <factor> {("*"|"/") <factor>}
 <factor> = <ident> | <number> | "("<expr>")"
+<const_declaration> = "const" <ident> "=" <number> {"," <ident> "=" <number>} ";"
+<var_declaration> = "var" <ident> {"," <ident>} ";"
+<bool_declaration> = "bool" <ident> {"," <ident>} ";"
 ````
 
 注：
@@ -31,3 +38,4 @@
 -	提供友好的编译器界面，包括可编辑的代码框、编译后目标机器指令显示框、编译后及运行时数据管理显示框、编译错误警示框和运行结果显示框等，并支持导入和保存程序文件
 -	在编译器的实现中使用本课程未介绍过的业界编译工具/框架，如ANTLR、LLVM等
 
+![img.png](img.png)

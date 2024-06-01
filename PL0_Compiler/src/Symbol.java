@@ -6,5 +6,5 @@ public enum Symbol {
 	oddsym, eql, neq, lss, leq, gtr, geq, lparen, rparen,
 	comma, semicolon, period, becomes, 
 	beginsym, endsym, ifsym, thensym, whilesym, writesym,
-	readsym, dosym, callsym, constsym, varsym, procsym
+	readsym, dosym, callsym, constsym, varsym, procsym ,boolsym
 }

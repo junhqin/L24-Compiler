@@ -2,7 +2,7 @@
  * 符号类型，为避免和Java的关键字Object冲突，我们改成Objekt
  */
 enum Objekt {
-	constant, variable, procedure
+	constant, variable, procedure, bool, number
 }
 
 /**
@@ -14,11 +14,12 @@ public class Table {
 	 */
 	public class Item {
 		String name;		// 名字
-		Objekt kind;		// 类型：const, var or procedure
+		Objekt kind;		// 类型：const, var , procedure bool
 		int val;			// 数值，仅const使用
 		int level;			// 所处层，var和procedure使用
 		int adr;			// 地址，var和procedure使用
 		int size;			// 需要分配的数据区空间, 仅procedure使用
+		boolean isInitialized;  //标识变量是否被赋值声明
 	}
 	
 	/**
@@ -40,6 +41,7 @@ public class Table {
 	public Item get(int i) {
 		if (table[i] == null) {
 			table[i] = new Item();
+
 			table[i].name = "";
 		}
 		return table[i];
@@ -53,25 +55,33 @@ public class Table {
 	 */
 	public void enter(Objekt k, int lev, int dx) {
 		tx ++;
+		System.out.println("tx = "+tx);
 		Item item = get(tx);
 		item.name = L24.lex.id;			// 注意id和num都是从词法分析器获得
 		item.kind = k;
 		switch (k) {
-		case constant:					// 常量名字
-			if (L24.lex.num > L24.amax) {
-				Err.report(31);		// 数字过大溢出
-				item.val = 0;
-			} else {
-				item.val = L24.lex.num;
-			}
-			break;
-		case variable:					// 变量名字 
-			item.level = lev;
-			item.adr = dx;
-			break;
-		case procedure:					// 过程名字
-			item.level = lev;
-			break;
+			case constant:					// 常量名字
+				if (L24.lex.num > L24.amax) {
+					Err.report(31);		// 数字过大溢出
+					item.val = 0;
+				} else {
+					item.val = L24.lex.num;
+				}
+				item.isInitialized = true;
+				break;
+			case variable:					// 变量名字
+				item.level = lev;
+				item.adr = dx;
+				item.isInitialized = false;
+				break;
+			case procedure:					// 过程名字
+				item.level = lev;
+				break;
+			case bool:
+				item.level = lev;
+				item.adr = dx;
+				item.isInitialized = false;
+				break;
 		}
 	}
 	
@@ -81,6 +91,7 @@ public class Table {
 	 */
 	public void debugTable(int start) {
 		if (!L24.tableswitch)
+
 			return;
 		System.out.println("TABLE:");
 		if (start >= tx)
@@ -88,15 +99,18 @@ public class Table {
 		for (int i=start+1; i<= tx; i++) {
 			String msg = "OOPS! UNKNOWN TABLE ITEM!";
 			switch (table[i].kind) {
-			case constant:
-				msg = "    " + i + " const " + table[i].name + " val=" + table[i].val;
-				break;
-			case variable:
-				msg = "    " + i + " var   " + table[i].name + " lev=" + table[i].level + " addr=" + table[i].adr;
-				break;
-			case procedure:
-				msg = "    " + i + " proc  " + table[i].name + " lev=" + table[i].level + " addr=" + table[i].adr + " size=" + table[i].size;
-				break;
+				case constant:
+					msg = "    " + i + " const " + table[i].name + " val=" + table[i].val;
+					break;
+				case variable:
+					msg = "    " + i + " var   " + table[i].name + " lev=" + table[i].level + " addr=" + table[i].adr;
+					break;
+				case procedure:
+					msg = "    " + i + " proc  " + table[i].name + " lev=" + table[i].level + " addr=" + table[i].adr + " size=" + table[i].size;
+					break;
+				case bool:
+					msg = "    " + i + " bool  " + table[i].name + " lev=" + table[i].level + " addr=" + table[i].adr;
+					break;
 			}
 			System.out.println(msg);
 			L24.fas.println(msg);
@@ -115,5 +129,14 @@ public class Table {
 				return i;
 		
 		return 0;
+	}
+
+	public int getSymbol(int l, int adr) {
+		for (int i = tx; i > 0; i--) {
+			if (get(i).level==l && get(i).adr==adr){
+				return get(i).kind.ordinal();
+			}
+		}
+		return -1;
 	}
 }

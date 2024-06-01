@@ -1,10 +1,16 @@
-/**
- *¡¡¸÷ÖÖ·ûºÅµÄ±àÂë
- */
+
 public enum Symbol {
-	nul, ident, number, plus, minus, times, slash,
-	oddsym, eql, neq, lss, leq, gtr, geq, lparen, rparen,
-	comma, semicolon, period, becomes, 
-	beginsym, endsym, ifsym, thensym, whilesym, writesym,
-	readsym, dosym, callsym, constsym, varsym, procsym
+	/**
+	 * nil:éæ³•ç¬¦å·
+	 */
+	nul, ident, number, plus, minus, times, slash, and, or, not, tf, falseValue, trueValue,
+	oddsym, eql, lss, leq, gtr, geq, lparen, rparen, lbrace, rbrace, neq,
+	/**
+	 * comma:","
+	 * semicolon:";"
+	 * becomes:":"
+	 */
+	comma, semicolon, becomes,
+	mainsym, forsym, ifsym, elsesym, thensym, endsym, whilesym, printsym, scansym,
+	readsym, dosym, callsym, constsym, varsym, procsym, boolsym
 }

@@ -1,3 +1,5 @@
+import java.util.Stack;
+
 /**
  * 类P-Code指令类型
  */
@@ -41,7 +43,21 @@ public class Interpreter {
 	 * 存放虚拟机代码的数组
 	 */
 	public Instruction[] code = new Instruction[L24.cxmax];
-	
+
+	/**
+	 * 存放变量的符号表
+	 *
+	 */
+	public Table table;
+
+	/**
+	 * 辅助类型栈
+	 * @param t
+	 */
+	Stack<Objekt> typeStack = new Stack<>();
+	public Interpreter(Table t){
+		this.table = t;
+	}
 	/**
 	 * 生成虚拟机代码
 	 * @param x instruction.f
@@ -92,6 +108,8 @@ public class Interpreter {
 			case LIT:				// 将a的值取到栈顶
 				s[t] = i.a;
 				t++;
+				//默认只能存放数字
+				typeStack.push(Objekt.number);
 				break;
 			case OPR:				// 数学、逻辑运算
 				switch (i.a)
@@ -107,53 +125,81 @@ public class Interpreter {
 				case 2:
 					t--;
 					s[t-1] = s[t-1]+s[t];
+					typeStack.pop();
 					break;
 				case 3:
 					t--;
 					s[t-1] = s[t-1]-s[t];
+					typeStack.pop();
 					break;
 				case 4:
 					t--;
 					s[t-1] = s[t-1]*s[t];
+					typeStack.pop();
 					break;
 				case 5:
 					t--;
 					s[t-1] = s[t-1]/s[t];
+					typeStack.pop();
 					break;
 				case 6:
 					s[t-1] = s[t-1]%2;
+					typeStack.pop();
 					break;
 				case 8:
 					t--;
 					s[t-1] = (s[t-1] == s[t] ? 1 : 0);
+					typeStack.pop();
+					typeStack.pop();
+					typeStack.push(Objekt.bool);
 					break;
 				case 9:
 					t--;
 					s[t-1] = (s[t-1] != s[t] ? 1 : 0);
+					typeStack.pop();
+					typeStack.pop();
+					typeStack.push(Objekt.bool);
 					break;
 				case 10:
 					t--;
 					s[t-1] = (s[t-1] < s[t] ? 1 : 0);
+					typeStack.pop();
+					typeStack.pop();
+					typeStack.push(Objekt.bool);
 					break;
 				case 11:
 					t--;
 					s[t-1] = (s[t-1] >= s[t] ? 1 : 0);
+					typeStack.pop();
+					typeStack.pop();
+					typeStack.push(Objekt.bool);
 					break;
 				case 12:
 					t--;
 					s[t-1] = (s[t-1] > s[t] ? 1 : 0);
+					typeStack.pop();
+					typeStack.pop();
+					typeStack.push(Objekt.bool);
 					break;
 				case 13:
 					t--;
 					s[t-1] = (s[t-1] <= s[t] ? 1 : 0);
+					typeStack.pop();
+					typeStack.pop();
+					typeStack.push(Objekt.bool);
 					break;
 				case 14:
-					System.out.print(s[t-1]);
-					L24.fa2.print(s[t-1]);
+					if (typeStack.peek() == Objekt.bool) {
+						System.out.print(s[t - 1] == 1 ? "true" : "false");
+						L24.fa2.print(s[t - 1] == 1 ? "true" : "false");
+					} else {
+						System.out.print(s[t - 1]);
+						L24.fa2.print(s[t - 1]);
+					}
 					t--;
 					break;
 				case 15:
-					System.out.println();
+					System.out.println("");
 					L24.fa2.println();
 					break;
 				case 16:
@@ -165,16 +211,49 @@ public class Interpreter {
 					} catch (Exception e) {}
 					L24.fa2.println(s[t]);
 					t++;
+					//暂时默认输入数字
+					typeStack.push(Objekt.number);
+					break;
+				//逻辑与
+				case 17:
+					t--;
+					s[t-1] = (s[t-1]!=0 && s[t]!=0)?1:0;
+					typeStack.pop();
+					typeStack.pop();
+					typeStack.push(Objekt.bool);
+					break;
+				//逻辑或
+				case 18:
+					t--;
+					s[t-1] = (s[t-1]!=0 || s[t]!=0)?1:0;
+					typeStack.pop();
+					typeStack.pop();
+					typeStack.push(Objekt.bool);
+					break;
+				//逻辑非
+				case 19:
+					s[t-1] = (s[t-1]==0)?1:0;
+					typeStack.pop();
+					typeStack.pop();
+					typeStack.push(Objekt.bool);
 					break;
 				}
 				break;
 			case LOD:				// 取相对当前过程的数据基地址为a的内存的值到栈顶
+				int type = table.getSymbol(base(i.l, s, b), i.a);
+				//bool类型的变量
+				if(type == 3 ){
+					typeStack.push(Objekt.bool);
+				} else {
+					typeStack.push(Objekt.number);
+				}
 				s[t] = s[base(i.l,s,b)+i.a];
 				t++;
 				break;
 			case STO:				// 栈顶的值存到相对当前过程的数据基地址为a的内存
 				t--;
 				s[base(i.l, s, b) + i.a] = s[t];
+				typeStack.pop();
 				break;
 			case CAL:				// 调用子过程
 				s[t] = base(i.l, s, b); 	// 将静态作用域基地址入栈

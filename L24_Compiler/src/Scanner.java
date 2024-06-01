@@ -10,7 +10,7 @@ public class Scanner {
 	 * 刚刚读入的字符
 	 */
 	private char ch = ' ';
-	
+
 	/**
 	 * 当前读入的行
 	 */
@@ -62,7 +62,10 @@ public class Scanner {
 	 * @see Table#enter
 	 */
 	public int num;
-	
+	/**
+	 * 布尔值
+	 */
+	public boolean bNum;
 	/**
 	 * 初始化词法分析器
 	 * @param input PL/0 源文件输入流
@@ -79,31 +82,32 @@ public class Scanner {
 		ssym['/'] = Symbol.slash;
 		ssym['('] = Symbol.lparen;
 		ssym[')'] = Symbol.rparen;
+		ssym['{'] = Symbol.lbrace;
+		ssym['}'] = Symbol.rbrace;
 		ssym['='] = Symbol.eql;
 		ssym[','] = Symbol.comma;
-		ssym['.'] = Symbol.period;
-		ssym['#'] = Symbol.neq;
 		ssym[';'] = Symbol.semicolon;
+		ssym['!'] = Symbol.not;
 		
 		// 设置保留字名字,按照字母顺序，便于折半查找
-		word = new String[] {"begin", "call", "const", "do", "end", "if",
-			"odd", "procedure", "read", "then", "var", "while", "write"};
+		word = new String[] {"bool", "const", "else", "end","for", "if", "main",
+			"print", "procedure", "scan", "then", "var", "while"};
 		
 		// 设置保留字符号
 		wsym = new Symbol[L24.norw];
-		wsym[0] = Symbol.beginsym;
-		wsym[1] = Symbol.callsym;
-		wsym[2] = Symbol.constsym;
-		wsym[3] = Symbol.dosym;
-		wsym[4] = Symbol.endsym;
+		wsym[0] = Symbol.boolsym;
+		wsym[1] = Symbol.constsym;
+		wsym[2] = Symbol.elsesym;
+		wsym[3] = Symbol.endsym;
+		wsym[4] = Symbol.forsym;
 		wsym[5] = Symbol.ifsym;
-		wsym[6] = Symbol.oddsym;
-		wsym[7] = Symbol.procsym;
-		wsym[8] = Symbol.readsym;
-		wsym[9] = Symbol.thensym;
-		wsym[10] = Symbol.varsym;
-		wsym[11] = Symbol.whilesym;
-		wsym[12] = Symbol.writesym;
+		wsym[6] = Symbol.mainsym;
+		wsym[7] = Symbol.printsym;
+		wsym[8] = Symbol.procsym;
+		wsym[9] = Symbol.scansym;
+		wsym[10] = Symbol.thensym;
+		wsym[11] = Symbol.varsym;
+		wsym[12] = Symbol.whilesym;
 	}
 	
 	/**
@@ -163,11 +167,15 @@ public class Scanner {
 		
 		// 然后搜索是不是保留字（请注意使用的是什么搜索方法）
 		i = java.util.Arrays.binarySearch(word, id);
-		
 		// 最后形成符号信息
 		if (i < 0) {
-			// 一般标识符
-			sym = Symbol.ident;
+			// 为bool类型的值
+			if (id.equals("true") || id.equals("false")) {
+				bNum = Boolean.parseBoolean(id); // 把字符串转换成布尔值
+				sym = Symbol.tf;
+			} else {
+				sym = Symbol.ident;
+			}
 		} else {
 			// 关键字
 			sym = wsym[i];
@@ -197,39 +205,64 @@ public class Scanner {
 	void matchOperator() {
 		// 请注意这里的写法跟Wirth的有点不同
 		switch (ch) {
-		case ':':		// 赋值符号
-			getch();
-			if (ch == '=') {
-				sym = Symbol.becomes;
+			case '!':
 				getch();
-			} else {
-				// 不能识别的符号
-				sym = Symbol.nul;
-			}
-			break;
-		case '<':		// 小于或者小于等于
-			getch();
-			if (ch == '=') {
-				sym = Symbol.leq;
+				if(ch =='='){
+					sym = Symbol.neq;
+					getch();
+				}else{
+					sym = Symbol.not;
+				}
+				break;
+			case '=':
 				getch();
-			} else {
-				sym = Symbol.lss;
-			}
-			break;
-		case '>':		// 大于或者大于等于
-			getch();
-			if (ch == '=') {
-				sym = Symbol.geq;
+				if(ch == '='){
+					sym = Symbol.eql;
+					getch();
+				} else{
+					sym = Symbol.becomes;
+				}
+				break;
+			case '<':		// 小于或者小于等于
 				getch();
-			} else {
-				sym = Symbol.gtr;
-			}
-			break;
-		default:		// 其他为单字符操作符（如果符号非法则返回nil）
-			sym = ssym[ch];
-			if (sym != Symbol.period)
+				if (ch == '=') {
+					sym = Symbol.leq;
+					getch();
+				} else {
+					sym = Symbol.lss;
+				}
+				break;
+			case '>':		// 大于或者大于等于
 				getch();
-			break;
+				if (ch == '=') {
+					sym = Symbol.geq;
+					getch();
+				} else {
+					sym = Symbol.gtr;
+				}
+				break;
+			case '|':
+				getch();
+				if(ch=='|'){
+					sym = Symbol.or;
+					getch();
+				} else{
+					sym = Symbol.nul;
+				}
+				break;
+			case '&':
+				getch();
+				if (ch == '&') {
+					sym = Symbol.and;
+					getch();
+				}else{
+					sym = Symbol.nul;
+				}
+				break;
+			default:		// 其他为单字符操作符（如果符号非法则返回nil）
+				sym = ssym[ch];
+				getch();
+				break;
 		}
 	}	
 }

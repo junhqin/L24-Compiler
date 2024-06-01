@@ -44,7 +44,7 @@ public class L24 {
 	public L24(BufferedReader fin) {
 		// 各部件的构造函数中都含有C语言版本的 init() 函数的一部分代码
 		table = new Table();
-		interp = new Interpreter();
+		interp = new Interpreter(table);
 		lex = new Scanner(fin);
 		parser = new Parser(lex, table, interp);
 	}
@@ -88,32 +88,34 @@ public class L24 {
 		try {
 			// 输入文件名
 			fname = "";
-			System.out.print("Input L2/4 file?   ");
-			while (fname.equals(""))
-				fname = stdin.readLine();
+//			System.out.print("Input L2/4 file?   ");
+//			while (fname.equals(""))
+//				fname = stdin.readLine();
+			fname = "resource/file.txt";
 			fin = new BufferedReader(new FileReader(fname), 4096);
 
 			// 是否输出虚拟机代码
-			fname = "";
+			fname = "y";
 			System.out.print("List object code?(Y/N)");
 			while (fname.equals(""))
 				fname = stdin.readLine();
 			L24.listswitch = (fname.charAt(0)=='y' || fname.charAt(0)=='Y');
 			
 			// 是否输出名字表
-			fname = "";
+			fname = "y";
 			System.out.print("List symbol table?(Y/N)");
 			while (fname.equals(""))
 				fname = stdin.readLine();
+
 			L24.tableswitch = (fname.charAt(0)=='y' || fname.charAt(0)=='Y');
 			
 			L24.fa1 = new PrintStream("fa1.tmp");
 			L24.fa1.println("Input pl/0 file?   " + fname);
 
 			// 构造编译器并初始化
-			L24 pl0 = new L24(fin);
+			L24 l24 = new L24(fin);
 			
-			if (pl0.compile()) {
+			if (l24.compile()) {
 				// 如果成功编译则接着解释运行
 				L24.fa2 = new PrintStream("fa2.tmp");
 				interp.interpret();
