@@ -1,6 +1,5 @@
 main{
-    var a ;
-    var result;
+    var a,result;
     bool flag;
     flag = true;
     a = 10;

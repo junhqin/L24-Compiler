@@ -1,8 +1,0 @@
-
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-.idea
-*.tmp
-
-out/
