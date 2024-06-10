@@ -57,8 +57,8 @@ public class L24 {
 		boolean abort = false;
 		
 		try {
-			L24.fa = new PrintStream("fa.tmp");
-			L24.fas = new PrintStream("fas.tmp");
+			L24.fa = new PrintStream("fa.tmp");//虚拟机代码结果
+			L24.fas = new PrintStream("table.txt");
 			parser.nextSym();		// 前瞻分析需要预先读入一个符号
 			parser.parse();			// 开始语法分析过程（连同语法检查、目标代码生成）
 		} catch (Error e) {
@@ -109,19 +109,19 @@ public class L24 {
 
 			L24.tableswitch = (fname.charAt(0)=='y' || fname.charAt(0)=='Y');
 			
-			L24.fa1 = new PrintStream("fa1.tmp");
-			L24.fa1.println("Input pl/0 file?   " + fname);
+			L24.fa1 = new PrintStream("address.txt");
+			L24.fa1.println("Input L2/4 file?   " + fname);
 
 			// 构造编译器并初始化
 			L24 l24 = new L24(fin);
 			
 			if (l24.compile()) {
 				// 如果成功编译则接着解释运行
-				L24.fa2 = new PrintStream("fa2.tmp");
+				L24.fa2 = new PrintStream("result.txt");
 				interp.interpret();
 				L24.fa2.close();
 			} else {
-				System.out.print("Errors in pl/0 program");
+				System.out.print("Errors in l24 program");
 			}
 			
 		} catch (IOException e) {

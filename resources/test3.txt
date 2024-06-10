@@ -1,0 +1,14 @@
+main {
+    var n, a, b, temp;
+    scan(n);
+    a = 0;
+    b = 1;
+
+    while (n > 1) {
+        temp = a + b;
+        a = b;
+        b = temp;
+        n = n - 1;
+    };
+    print(b);
+}

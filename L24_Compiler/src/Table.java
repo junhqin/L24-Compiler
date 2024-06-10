@@ -55,7 +55,6 @@ public class Table {
 	 */
 	public void enter(Objekt k, int lev, int dx) {
 		tx ++;
-		System.out.println("tx = "+tx);
 		Item item = get(tx);
 		item.name = L24.lex.id;			// 注意id和num都是从词法分析器获得
 		item.kind = k;

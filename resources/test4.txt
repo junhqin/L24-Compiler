@@ -1,0 +1,10 @@
+main {
+    var b, a, sum;
+    sum = 0;
+    scan(a,b);
+    while (a <= b) {
+        sum = sum + a;
+        a= a+1;
+    };
+    print(sum);
+}

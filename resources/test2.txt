@@ -1,0 +1,15 @@
+main{
+    var a,b;
+    bool flag;
+    flag = true;
+    scan(a,b);
+    if(a>b)
+    then{
+        flag = true;
+    }
+    else {
+        flag = false;
+    }
+    end;
+    print(flag);
+}

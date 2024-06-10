@@ -97,7 +97,7 @@ public class Interpreter {
 		Instruction i;							// 存放当前指令
 		int[] s = new int[stacksize];		// 栈
 		
-		System.out.println("start pl0");
+		System.out.println("start l24");
 		t = b = p = 0;
 		s[0] = s[1] = s[2] = 0;
 		do {
@@ -168,7 +168,7 @@ public class Interpreter {
 					break;
 				case 11:
 					t--;
-					s[t-1] = (s[t-1] >= s[t] ? 1 : 0);
+					s[t-1] = (s[t-1] <= s[t] ? 1 : 0);
 					typeStack.pop();
 					typeStack.pop();
 					typeStack.push(Objekt.bool);
@@ -182,7 +182,7 @@ public class Interpreter {
 					break;
 				case 13:
 					t--;
-					s[t-1] = (s[t-1] <= s[t] ? 1 : 0);
+					s[t-1] = (s[t-1] >= s[t] ? 1 : 0);
 					typeStack.pop();
 					typeStack.pop();
 					typeStack.push(Objekt.bool);
