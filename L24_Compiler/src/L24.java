@@ -57,7 +57,7 @@ public class L24 {
 		boolean abort = false;
 		
 		try {
-			L24.fa = new PrintStream("fa.tmp");//虚拟机代码结果
+			L24.fa = new PrintStream("code.txt");//虚拟机代码结果
 			L24.fas = new PrintStream("table.txt");
 			parser.nextSym();		// 前瞻分析需要预先读入一个符号
 			parser.parse();			// 开始语法分析过程（连同语法检查、目标代码生成）
